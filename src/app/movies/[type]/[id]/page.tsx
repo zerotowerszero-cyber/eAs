@@ -114,7 +114,14 @@ export default function MovieDetailsPage() {
 
         {/* Season & Episode Selector for TV Shows */}
         {type === 'tv' && details.seasons && (
-          <div style={{ marginTop: "24px", padding: "24px", background: "var(--surface)", borderRadius: "16px", border: "1px solid var(--border)", boxShadow: "var(--shadow-sm)" }}>
+          <div style={{ 
+            marginTop: "24px", 
+            padding: "32px", 
+            background: "var(--surface)", 
+            borderRadius: "var(--radius-xl)", 
+            border: "1px solid var(--border)", 
+            boxShadow: "var(--shadow-sm)" 
+          }}>
             <h3 style={{ margin: "0 0 16px 0", fontSize: "18px" }}>Select Episode</h3>
             
             <div style={{ display: "flex", gap: "16px", marginBottom: "24px", overflowX: "auto", paddingBottom: "8px" }}>
@@ -188,23 +195,33 @@ export default function MovieDetailsPage() {
         )}
 
         {/* Media Details */}
-        <div style={{ marginTop: "32px", display: "flex", gap: "32px", flexWrap: "wrap" }}>
+        <div style={{ 
+          marginTop: "32px", 
+          padding: "32px",
+          background: "var(--surface)",
+          borderRadius: "var(--radius-xl)",
+          border: "1px solid var(--border)",
+          boxShadow: "var(--shadow-sm)",
+          display: "flex", 
+          gap: "32px", 
+          flexWrap: "wrap" 
+        }}>
           {details.poster_path && (
             <img 
               src={`https://image.tmdb.org/t/p/w500${details.poster_path}`} 
               alt={details.title || details.name}
-              style={{ width: "200px", borderRadius: "12px", boxShadow: "var(--shadow-md)", objectFit: "cover", flexShrink: 0 }}
+              style={{ width: "240px", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)", objectFit: "cover", flexShrink: 0 }}
             />
           )}
           <div style={{ flex: "1 1 400px" }}>
-            <h1 className="hero-title" style={{ fontSize: "clamp(24px, 4vw, 40px)", margin: "0 0 8px 0" }}>
+            <h1 className="hero-title" style={{ fontSize: "clamp(32px, 4vw, 48px)", margin: "0 0 12px 0", textAlign: "left" }}>
               {details.title || details.name}
             </h1>
-            <div style={{ display: "flex", gap: "16px", color: "#5f6368", marginBottom: "16px", fontSize: "14px", fontWeight: "500", flexWrap: "wrap" }}>
+            <div style={{ display: "flex", gap: "16px", color: "#5f6368", marginBottom: "24px", fontSize: "16px", fontWeight: "500", flexWrap: "wrap" }}>
               <span>{(details.release_date || details.first_air_date || "").split("-")[0]}</span>
               <span>•</span>
-              <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
-                <svg width="14" height="14" viewBox="0 0 24 24" fill="#f29900" stroke="#f29900" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+              <span style={{ display: "flex", alignItems: "center", gap: "6px" }}>
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="#f29900" stroke="#f29900" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
                 {details.vote_average?.toFixed(1)} / 10
               </span>
               {details.genres && (
@@ -215,7 +232,7 @@ export default function MovieDetailsPage() {
               )}
             </div>
             
-            <p style={{ lineHeight: 1.6, color: "var(--foreground)", fontSize: "16px" }}>
+            <p style={{ lineHeight: 1.7, color: "var(--foreground)", fontSize: "18px" }}>
               {details.overview}
             </p>
           </div>

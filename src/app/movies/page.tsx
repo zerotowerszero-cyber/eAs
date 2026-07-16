@@ -84,19 +84,16 @@ export default function MoviesSearchPage() {
       <div style={{ flex: 1, padding: "32px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
         
         <div style={{ textAlign: "center", marginBottom: "64px", marginTop: "8vh" }}>
-          <h1 style={{ 
+          <h1 className="hero-title" style={{ 
             fontSize: "clamp(36px, 5vw, 48px)", 
-            margin: "0 auto 24px auto", 
-            fontWeight: "500",
-            letterSpacing: "-0.02em",
-            color: "var(--foreground)"
+            margin: "0 auto 32px auto", 
           }}>
             Search Movies & Shows
           </h1>
-          <form onSubmit={handleSearch} style={{ display: "flex", maxWidth: "584px", margin: "0 auto", position: "relative" }}>
+          <form onSubmit={handleSearch} style={{ display: "flex", maxWidth: "684px", margin: "0 auto", position: "relative" }}>
             <div style={{
               position: "absolute",
-              left: "16px",
+              left: "20px",
               top: "0",
               bottom: "0",
               display: "flex",
@@ -113,19 +110,32 @@ export default function MoviesSearchPage() {
               placeholder="What do you want to watch?"
               style={{
                 width: "100%",
-                height: "48px",
-                padding: "0 24px 0 48px",
+                height: "56px",
+                padding: "0 24px 0 52px",
                 fontSize: "16px",
-                border: "1px solid var(--border)",
-                borderRadius: "24px",
+                border: "1px solid transparent",
+                borderRadius: "28px",
                 background: "var(--surface)",
                 color: "var(--foreground)",
                 outline: "none",
-                boxShadow: "none",
-                transition: "box-shadow 0.2s ease"
+                boxShadow: "0 1px 6px rgba(32,33,36,.28)",
+                transition: "all 0.2s ease"
               }}
-              onFocus={(e) => e.target.style.boxShadow = "var(--shadow-sm)"}
-              onBlur={(e) => e.target.style.boxShadow = "none"}
+              onFocus={(e) => {
+                e.target.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                e.target.style.background = "var(--surface)";
+              }}
+              onBlur={(e) => e.target.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)"}
+              onMouseOver={(e) => {
+                if (document.activeElement !== e.target) {
+                  e.target.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 2px 8px rgba(32,33,36,.1)";
+                }
+              }}
+              onMouseOut={(e) => {
+                if (document.activeElement !== e.target) {
+                  e.target.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                }
+              }}
             />
           </form>
         </div>
@@ -149,9 +159,26 @@ export default function MoviesSearchPage() {
                 <Link 
                   href={`/movies/${item.media_type}/${item.id}`} 
                   key={item.id}
-                  style={{ textDecoration: "none", color: "inherit", display: "flex", flexDirection: "column", transition: "transform 0.2s ease" }}
-                  onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.03)"}
-                  onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
+                  style={{ 
+                    textDecoration: "none", 
+                    color: "inherit", 
+                    display: "flex", 
+                    flexDirection: "column", 
+                    transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+                    background: "var(--surface)",
+                    borderRadius: "var(--radius-lg)",
+                    border: "1px solid var(--border)",
+                    padding: "16px",
+                    boxShadow: "var(--shadow-sm)"
+                  }}
+                  onMouseOver={(e) => {
+                    e.currentTarget.style.transform = "translateY(-4px)";
+                    e.currentTarget.style.boxShadow = "var(--shadow-md)";
+                  }}
+                  onMouseOut={(e) => {
+                    e.currentTarget.style.transform = "translateY(0)";
+                    e.currentTarget.style.boxShadow = "var(--shadow-sm)";
+                  }}
                 >
                   <div style={{ 
                     width: "100%", 
@@ -159,9 +186,8 @@ export default function MoviesSearchPage() {
                     backgroundColor: "var(--border)",
                     borderRadius: "12px",
                     overflow: "hidden",
-                    marginBottom: "12px",
-                    position: "relative",
-                    boxShadow: "var(--shadow-sm)"
+                    marginBottom: "16px",
+                    position: "relative"
                   }}>
                     {item.poster_path ? (
                       <img 
@@ -180,10 +206,11 @@ export default function MoviesSearchPage() {
                       right: "8px",
                       background: "rgba(0,0,0,0.7)",
                       color: "white",
-                      padding: "4px 8px",
+                      padding: "4px 10px",
                       borderRadius: "12px",
                       fontSize: "12px",
-                      fontWeight: "600"
+                      fontWeight: "600",
+                      backdropFilter: "blur(4px)"
                     }}>
                       {item.media_type === 'movie' ? 'Movie' : 'TV'}
                     </div>
