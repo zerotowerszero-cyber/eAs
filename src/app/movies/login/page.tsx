@@ -66,8 +66,8 @@ export default function LoginPage() {
               outline: "none",
               boxShadow: "0 1px 6px rgba(32,33,36,.28)",
               textAlign: "center",
-              letterSpacing: "4px",
-              fontFamily: "'Google Sans Mono', 'Roboto Mono', monospace",
+              letterSpacing: code.length > 0 ? "4px" : "normal",
+              fontFamily: code.length > 0 ? "'Google Sans Mono', 'Roboto Mono', monospace" : "'Google Sans Text', 'Google Sans', sans-serif",
               transition: "all 0.2s ease"
             }}
             onFocus={(e) => {
