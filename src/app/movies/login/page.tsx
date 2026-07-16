@@ -57,16 +57,32 @@ export default function LoginPage() {
               width: "100%",
               height: "56px",
               padding: "0 24px",
-              fontSize: "18px",
-              border: "1px solid var(--border)",
+              fontSize: "16px",
+              border: "1px solid transparent",
               borderRadius: "28px",
               background: "var(--surface)",
               color: "var(--foreground)",
               outline: "none",
-              boxShadow: "var(--shadow-sm)",
+              boxShadow: "0 1px 6px rgba(32,33,36,.28)",
               textAlign: "center",
               letterSpacing: "4px",
-              fontFamily: "'Google Sans Mono', 'Roboto Mono', monospace"
+              fontFamily: "'Google Sans Mono', 'Roboto Mono', monospace",
+              transition: "all 0.2s ease"
+            }}
+            onFocus={(e) => {
+              e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+              e.currentTarget.style.background = "var(--surface)";
+            }}
+            onBlur={(e) => e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)"}
+            onMouseOver={(e) => {
+              if (document.activeElement !== e.currentTarget) {
+                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 2px 8px rgba(32,33,36,.15)";
+              }
+            }}
+            onMouseOut={(e) => {
+              if (document.activeElement !== e.currentTarget) {
+                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+              }
             }}
           />
           {error && <div style={{ color: "#d93025", textAlign: "center", fontSize: "14px", fontWeight: "500" }}>{error}</div>}
@@ -83,7 +99,21 @@ export default function LoginPage() {
               fontSize: "16px",
               fontWeight: "500",
               cursor: loading || code.length !== 10 ? "not-allowed" : "pointer",
-              transition: "all 0.2s ease"
+              transition: "all 0.2s ease",
+              boxShadow: loading || code.length !== 10 ? "none" : "0 1px 6px rgba(32,33,36,.28)",
+              marginTop: "8px"
+            }}
+            onMouseOver={(e) => {
+              if (!loading && code.length === 10) {
+                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 4px 12px rgba(32,33,36,.15)";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!loading && code.length === 10) {
+                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }
             }}
           >
             {loading ? "Verifying..." : "Submit"}
