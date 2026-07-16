@@ -11,7 +11,7 @@ export default async function MasterCodeGeneratorPage() {
   }
 
   // Get IP
-  const headersList = headers();
+  const headersList = await headers();
   const forwardedFor = headersList.get("x-forwarded-for");
   const realIp = headersList.get("x-real-ip");
   let ip = "127.0.0.1";
@@ -22,7 +22,8 @@ export default async function MasterCodeGeneratorPage() {
   }
 
   // Get HWID Cookie
-  const hwidCookie = cookies().get("eas_hwid")?.value;
+  const cookiesList = await cookies();
+  const hwidCookie = cookiesList.get("eas_hwid")?.value;
 
   // Authorization Check: IP matches OR HWID matches
   const isAuthorized = (adminAuth.ip === ip) || (adminAuth.deviceId && adminAuth.deviceId === hwidCookie);

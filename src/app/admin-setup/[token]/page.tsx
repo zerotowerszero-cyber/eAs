@@ -32,7 +32,7 @@ export default async function AdminSetupPage({ params }: { params: { token: stri
   }
 
   // Get IP
-  const headersList = headers();
+  const headersList = await headers();
   const forwardedFor = headersList.get("x-forwarded-for");
   const realIp = headersList.get("x-real-ip");
   let ip = "127.0.0.1";
@@ -53,7 +53,8 @@ export default async function AdminSetupPage({ params }: { params: { token: stri
   });
 
   // Set HWID Cookie
-  cookies().set("eas_hwid", deviceId, {
+  const cookiesList = await cookies();
+  cookiesList.set("eas_hwid", deviceId, {
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
     sameSite: "lax",

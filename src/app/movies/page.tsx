@@ -4,8 +4,9 @@ import { useState, useEffect } from "react";
 import Header from "@/components/Header";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
+import { Suspense } from "react";
 
-export default function MoviesSearchPage() {
+function MoviesSearchContent() {
   const router = useRouter();
   const searchParams = useSearchParams();
   
@@ -122,18 +123,18 @@ export default function MoviesSearchPage() {
                 transition: "all 0.2s ease"
               }}
               onFocus={(e) => {
-                e.target.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
-                e.target.style.background = "var(--surface)";
+                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                e.currentTarget.style.background = "var(--surface)";
               }}
-              onBlur={(e) => e.target.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)"}
+              onBlur={(e) => e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)"}
               onMouseOver={(e) => {
-                if (document.activeElement !== e.target) {
-                  e.target.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 2px 8px rgba(32,33,36,.1)";
+                if (document.activeElement !== e.currentTarget) {
+                  e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 2px 8px rgba(32,33,36,.15)";
                 }
               }}
               onMouseOut={(e) => {
-                if (document.activeElement !== e.target) {
-                  e.target.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                if (document.activeElement !== e.currentTarget) {
+                  e.currentTarget.style.boxShadow = "none";
                 }
               }}
             />
@@ -222,5 +223,13 @@ export default function MoviesSearchPage() {
         }
       `}} />
     </main>
+  );
+}
+
+export default function MoviesSearchPage() {
+  return (
+    <Suspense fallback={<div style={{ padding: '24px', textAlign: 'center' }}>Loading search...</div>}>
+      <MoviesSearchContent />
+    </Suspense>
   );
 }

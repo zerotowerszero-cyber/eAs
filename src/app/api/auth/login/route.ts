@@ -24,7 +24,8 @@ export async function POST(req: NextRequest) {
     await markCodeUsed(code);
 
     // Set HTTP-Only Cookie
-    cookies().set("eas_auth_token", code, {
+    const cookiesList = await cookies();
+    cookiesList.set("eas_auth_token", code, {
       httpOnly: true,
       secure: process.env.NODE_ENV === "production",
       sameSite: "lax",

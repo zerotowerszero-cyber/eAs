@@ -33,7 +33,8 @@ export async function POST(req: NextRequest) {
     }
 
     // Get HWID Cookie
-    const hwidCookie = cookies().get("eas_hwid")?.value;
+    const cookiesList = await cookies();
+    const hwidCookie = cookiesList.get("eas_hwid")?.value;
 
     // Authorization Check: IP matches OR HWID matches
     const isAuthorized = (adminAuth.ip === ip) || (adminAuth.deviceId && adminAuth.deviceId === hwidCookie);
