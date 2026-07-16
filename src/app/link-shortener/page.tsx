@@ -147,24 +147,21 @@ export default function LinkShortener() {
           >
             {loading ? "Shortening..." : "Shorten URL"}
           </button>
-        </form>
 
-        {shortUrl && (
-          <div style={{ 
-            marginTop: "64px", 
-            padding: "24px 32px", 
-            background: "var(--surface)", 
-            borderRadius: "32px",
-            border: "1px solid var(--border)",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            maxWidth: "700px",
-            width: "100%",
-            margin: "64px auto 0",
-            animation: "fadeIn 0.3s ease",
-            boxShadow: "var(--shadow-sm)"
-          }}>
+          {shortUrl && (
+            <div style={{ 
+              padding: "20px 32px", 
+              background: "var(--surface)", 
+              borderRadius: "40px",
+              border: "1px solid var(--border)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+              width: "100%",
+              animation: "fadeIn 0.3s ease",
+              boxShadow: "var(--shadow-sm)",
+              boxSizing: "border-box"
+            }}>
             <a 
               href={shortUrl} 
               target="_blank" 
@@ -180,6 +177,7 @@ export default function LinkShortener() {
               {shortUrl}
             </a>
             <button
+              type="button"
               onClick={handleCopy}
               style={{
                 background: "transparent",
@@ -209,6 +207,7 @@ export default function LinkShortener() {
             </button>
           </div>
         )}
+        </form>
       </div>
       
       <style dangerouslySetInnerHTML={{__html: `
