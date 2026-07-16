@@ -159,26 +159,9 @@ export default function MoviesSearchPage() {
                 <Link 
                   href={`/movies/${item.media_type}/${item.id}`} 
                   key={item.id}
-                  style={{ 
-                    textDecoration: "none", 
-                    color: "inherit", 
-                    display: "flex", 
-                    flexDirection: "column", 
-                    transition: "transform 0.3s cubic-bezier(0.4, 0, 0.2, 1), box-shadow 0.3s cubic-bezier(0.4, 0, 0.2, 1)",
-                    background: "var(--surface)",
-                    borderRadius: "var(--radius-lg)",
-                    border: "1px solid var(--border)",
-                    padding: "16px",
-                    boxShadow: "var(--shadow-sm)"
-                  }}
-                  onMouseOver={(e) => {
-                    e.currentTarget.style.transform = "translateY(-4px)";
-                    e.currentTarget.style.boxShadow = "var(--shadow-md)";
-                  }}
-                  onMouseOut={(e) => {
-                    e.currentTarget.style.transform = "translateY(0)";
-                    e.currentTarget.style.boxShadow = "var(--shadow-sm)";
-                  }}
+                  style={{ textDecoration: "none", color: "inherit", display: "flex", flexDirection: "column", transition: "transform 0.2s ease" }}
+                  onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.03)"}
+                  onMouseOut={(e) => e.currentTarget.style.transform = "scale(1)"}
                 >
                   <div style={{ 
                     width: "100%", 
@@ -186,8 +169,9 @@ export default function MoviesSearchPage() {
                     backgroundColor: "var(--border)",
                     borderRadius: "12px",
                     overflow: "hidden",
-                    marginBottom: "16px",
-                    position: "relative"
+                    marginBottom: "12px",
+                    position: "relative",
+                    boxShadow: "var(--shadow-sm)"
                   }}>
                     {item.poster_path ? (
                       <img 

@@ -114,14 +114,7 @@ export default function MovieDetailsPage() {
 
         {/* Season & Episode Selector for TV Shows */}
         {type === 'tv' && details.seasons && (
-          <div style={{ 
-            marginTop: "24px", 
-            padding: "32px", 
-            background: "var(--surface)", 
-            borderRadius: "var(--radius-xl)", 
-            border: "1px solid var(--border)", 
-            boxShadow: "var(--shadow-sm)" 
-          }}>
+          <div style={{ marginTop: "32px" }}>
             <h3 style={{ margin: "0 0 16px 0", fontSize: "18px" }}>Select Episode</h3>
             
             <div style={{ display: "flex", gap: "16px", marginBottom: "24px", overflowX: "auto", paddingBottom: "8px" }}>
@@ -195,26 +188,16 @@ export default function MovieDetailsPage() {
         )}
 
         {/* Media Details */}
-        <div style={{ 
-          marginTop: "32px", 
-          padding: "32px",
-          background: "var(--surface)",
-          borderRadius: "var(--radius-xl)",
-          border: "1px solid var(--border)",
-          boxShadow: "var(--shadow-sm)",
-          display: "flex", 
-          gap: "32px", 
-          flexWrap: "wrap" 
-        }}>
+        <div style={{ marginTop: "40px", display: "flex", gap: "32px", flexWrap: "wrap" }}>
           {details.poster_path && (
             <img 
               src={`https://image.tmdb.org/t/p/w500${details.poster_path}`} 
               alt={details.title || details.name}
-              style={{ width: "240px", borderRadius: "var(--radius-md)", boxShadow: "var(--shadow-sm)", objectFit: "cover", flexShrink: 0 }}
+              style={{ width: "240px", borderRadius: "12px", boxShadow: "var(--shadow-md)", objectFit: "cover", flexShrink: 0 }}
             />
           )}
           <div style={{ flex: "1 1 400px" }}>
-            <h1 className="hero-title" style={{ fontSize: "clamp(32px, 4vw, 48px)", margin: "0 0 12px 0", textAlign: "left" }}>
+            <h1 className="hero-title" style={{ fontSize: "clamp(24px, 4vw, 40px)", margin: "0 0 12px 0", textAlign: "left" }}>
               {details.title || details.name}
             </h1>
             <div style={{ display: "flex", gap: "16px", color: "#5f6368", marginBottom: "24px", fontSize: "16px", fontWeight: "500", flexWrap: "wrap" }}>
