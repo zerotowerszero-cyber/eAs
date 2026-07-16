@@ -109,20 +109,16 @@ export default async function RedirectPage({
           <h1 className="hero-title" style={{ 
             margin: 0, 
             lineHeight: 1.1, 
-            fontSize: "clamp(32px, 5vw, 48px)", 
             textAlign: "center" 
           }}>
             This website isn't commonly known
           </h1>
           
-          <p style={{ 
+          <p className="hero-subtitle" style={{ 
             margin: 0, 
-            lineHeight: 1.6, 
+            lineHeight: 1.5, 
             textAlign: "center", 
-            maxWidth: "600px",
-            fontSize: "18px",
-            color: "var(--foreground)",
-            opacity: 0.8
+            maxWidth: "600px" 
           }}>
             The short link you clicked is trying to send you to a website that isn't on our list of safe, commonly known domains. Please review the link below before continuing.
           </p>
