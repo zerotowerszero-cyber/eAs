@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { getAuthCode } from "@/lib/db";
+import { getAuthCode, markCodeUsed } from "@/lib/db";
 import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
@@ -10,26 +10,18 @@ export async function POST(req: NextRequest) {
     }
 
     const authCodeData = await getAuthCode(code);
+    
+    // Check if code exists and is unused
     if (!authCodeData) {
       return NextResponse.json({ error: "Invalid code" }, { status: 401 });
     }
-
-    // Check IP Binding
-    const forwardedFor = req.headers.get("x-forwarded-for");
-    const realIp = req.headers.get("x-real-ip");
-    let currentIp = "127.0.0.1";
-    if (forwardedFor) {
-      currentIp = forwardedFor.split(',')[0].trim();
-    } else if (realIp) {
-      currentIp = realIp;
+    
+    if (authCodeData.used) {
+      return NextResponse.json({ error: "Code has already been used" }, { status: 403 });
     }
 
-    // Allow bypass for local dev ONLY if the bound IP is also local
-    // In production, this strict check ensures the IPs match perfectly.
-    if (authCodeData.ip !== currentIp && currentIp !== "127.0.0.1" && authCodeData.ip !== "127.0.0.1") {
-      // IP Mismatch - Deny access
-      return NextResponse.json({ error: "Network mismatch. This code is locked to a different connection." }, { status: 403 });
-    }
+    // Mark code as used (single-use)
+    await markCodeUsed(code);
 
     // Set HTTP-Only Cookie
     cookies().set("eas_auth_token", code, {
