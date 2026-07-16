@@ -131,15 +131,13 @@ export default function LinkShortener() {
               background: loading || !url ? "var(--border)" : "var(--primary)",
               color: loading || !url ? "#9aa0a6" : "#ffffff",
               border: "none",
-              borderRadius: "40px",
-              height: "64px",
-              padding: "0 48px",
+              borderRadius: "32px",
+              padding: "16px 48px",
               fontSize: "18px",
               fontWeight: "500",
               cursor: loading || !url ? "not-allowed" : "pointer",
               transition: "all 0.2s ease",
               boxShadow: loading || !url ? "none" : "var(--shadow-sm)",
-              boxSizing: "border-box"
             }}
             onMouseOver={(e) => {
               if (!loading && url) e.currentTarget.style.boxShadow = "var(--shadow-md)";
