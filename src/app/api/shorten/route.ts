@@ -50,7 +50,7 @@ export async function POST(request: Request) {
   } catch (error) {
     console.error('Error shortening URL:', error);
     return NextResponse.json(
-      { error: 'An unexpected error occurred.' },
+      { error: error instanceof Error ? error.message : 'An unexpected error occurred.' },
       { status: 500 }
     );
   }
