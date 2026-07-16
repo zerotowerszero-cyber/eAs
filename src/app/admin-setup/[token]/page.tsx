@@ -3,8 +3,8 @@ import { getAdminAuth, setAdminAuth } from "@/lib/db";
 import Header from "@/components/Header";
 import crypto from "crypto";
 
-export default async function AdminSetupPage({ params }: { params: { token: string } }) {
-  const token = params.token;
+export default async function AdminSetupPage({ params }: { params: Promise<{ token: string }> }) {
+  const { token } = await params;
   const expectedToken = process.env.ADMIN_SETUP_TOKEN || "eas-cx-admin-2026";
 
   if (token !== expectedToken) {
