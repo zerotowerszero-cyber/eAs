@@ -1,9 +1,24 @@
-import { kv } from '@vercel/kv';
+import { createClient } from 'redis';
 import fs from 'fs';
 import path from 'path';
 
-// A simple fallback mechanism for local development if Vercel KV is not configured.
+// A simple fallback mechanism for local development if Redis is not configured.
 const LOCAL_DB_PATH = path.join(process.cwd(), '.local-db.json');
+
+let redisClient: any = null;
+
+async function getRedisClient() {
+  if (redisClient) return redisClient;
+  
+  if (process.env.REDIS_URL) {
+    redisClient = createClient({ url: process.env.REDIS_URL });
+    redisClient.on('error', (err: any) => console.error('Redis Client Error', err));
+    await redisClient.connect();
+    return redisClient;
+  }
+  
+  return null;
+}
 
 function getLocalData(): Record<string, string> {
   if (fs.existsSync(LOCAL_DB_PATH)) {
@@ -25,10 +40,10 @@ function saveLocalData(data: Record<string, string>) {
  * Gets a URL by its short code.
  */
 export async function getUrl(code: string): Promise<string | null> {
-  const hasKV = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
+  const client = await getRedisClient();
   
-  if (hasKV) {
-    return await kv.get<string>(`url:${code}`);
+  if (client) {
+    return await client.get(`url:${code}`);
   } else {
     const data = getLocalData();
     return data[code] || null;
@@ -39,10 +54,10 @@ export async function getUrl(code: string): Promise<string | null> {
  * Saves a URL to a short code.
  */
 export async function saveUrl(code: string, url: string): Promise<void> {
-  const hasKV = process.env.KV_REST_API_URL && process.env.KV_REST_API_TOKEN;
+  const client = await getRedisClient();
   
-  if (hasKV) {
-    await kv.set(`url:${code}`, url);
+  if (client) {
+    await client.set(`url:${code}`, url);
   } else {
     const data = getLocalData();
     data[code] = url;
