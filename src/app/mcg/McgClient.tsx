@@ -51,38 +51,37 @@ export default function McgClient() {
           >
             {code}
           </h1>
-          <button 
-            onClick={() => navigator.clipboard.writeText(code)}
-            style={{
-              marginTop: "24px",
-              background: "transparent",
-              border: "none",
-              color: "var(--primary)",
-              cursor: "pointer",
-              fontWeight: "500",
-              fontSize: "16px",
-              padding: "8px 16px",
-              borderRadius: "20px"
-            }}
-            onMouseOver={(e) => e.currentTarget.style.background = "var(--surface)"}
-            onMouseOut={(e) => e.currentTarget.style.background = "transparent"}
-          >
-            Copy to Clipboard
-          </button>
+
         </div>
       ) : (
         <button
           onClick={handleGenerate}
           disabled={loading}
           style={{
-            background: "transparent",
-            color: loading ? "#5f6368" : "var(--foreground)",
+            background: "var(--primary)",
+            color: "white",
             border: "none",
-            fontSize: "24px",
+            borderRadius: "32px",
+            height: "48px",
+            padding: "0 32px",
+            fontSize: "16px",
             fontWeight: "500",
             cursor: loading ? "not-allowed" : "pointer",
-            transition: "opacity 0.2s ease",
-            opacity: loading ? 0.5 : 1
+            transition: "all 0.2s ease",
+            opacity: loading ? 0.7 : 1,
+            boxShadow: "0 1px 6px rgba(32,33,36,.28)"
+          }}
+          onMouseOver={(e) => {
+            if (!loading) {
+              e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 4px 12px rgba(32,33,36,.15)";
+              e.currentTarget.style.transform = "translateY(-1px)";
+            }
+          }}
+          onMouseOut={(e) => {
+            if (!loading) {
+              e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+              e.currentTarget.style.transform = "translateY(0)";
+            }
           }}
         >
           {loading ? "..." : "mcg"}
