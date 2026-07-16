@@ -1,6 +1,7 @@
 import { redirect } from 'next/navigation';
 import { getUrl } from '@/lib/db';
 import Header from '@/components/Header';
+import ScanButton from '@/components/ScanButton';
 
 // List of commonly known domains that skip the warning screen.
 // We check if the hostname ends with these domains (to catch subdomains).
@@ -64,8 +65,9 @@ export default async function RedirectPage({
 
   // Otherwise, render the warning UI that perfectly matches the site's design system
   return (
-    <main style={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
+    <main style={{ height: "100dvh", display: "flex", flexDirection: "column", position: "relative" }}>
       <Header />
+      <ScanButton url={originalUrl} />
       
       {/* Optical centering spacer */}
       <div style={{ height: "32px", flexShrink: 0 }}></div>
