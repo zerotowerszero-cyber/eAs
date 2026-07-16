@@ -106,7 +106,12 @@ export default async function RedirectPage({
             </svg>
           </div>
 
-          <h1 className="hero-title" style={{ margin: 0, lineHeight: 1 }}>
+          <h1 className="hero-title" style={{ 
+            margin: 0, 
+            lineHeight: 1.1, 
+            fontSize: "clamp(32px, 5vw, 48px)", 
+            textAlign: "center" 
+          }}>
             This website isn't commonly known
           </h1>
           
