@@ -110,7 +110,7 @@ export default async function RedirectPage({
             margin: 0, 
             lineHeight: 1.1, 
             textAlign: "center",
-            fontSize: "clamp(32px, 5vw, 48px)"
+            fontSize: "clamp(48px, 6vw, 64px)"
           }}>
             This website isn't commonly known
           </h1>
@@ -120,7 +120,7 @@ export default async function RedirectPage({
             lineHeight: 1.5, 
             textAlign: "center", 
             maxWidth: "600px",
-            fontSize: "clamp(14px, 2vw, 16px)"
+            fontSize: "clamp(18px, 3vw, 22px)"
           }}>
             The short link you clicked is trying to send you to a website that isn't on our list of safe, commonly known domains. Please review the link below before continuing.
           </p>
