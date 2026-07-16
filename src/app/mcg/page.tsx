@@ -3,6 +3,8 @@ import { getAdminAuth } from "@/lib/db";
 import Header from "@/components/Header";
 import McgClient from "./McgClient";
 
+export const dynamic = 'force-dynamic';
+
 export default async function MasterCodeGeneratorPage() {
   const adminAuth = await getAdminAuth();
   
