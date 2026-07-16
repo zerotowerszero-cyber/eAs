@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "eAs | Coding Solutions",
+  title: "eAs",
   description: "We are focused on making anything that is coding: websites, browsers, apps, or bots.",
   icons: {
     icon: "/logo.svg",
