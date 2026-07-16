@@ -55,18 +55,18 @@ export default function LoginPage() {
             maxLength={10}
             style={{
               width: "100%",
-              height: "72px",
+              height: "56px",
               padding: "0 24px",
-              fontSize: "32px",
+              fontSize: "16px",
               fontWeight: "500",
               border: "1px solid transparent",
-              borderRadius: "36px",
+              borderRadius: "28px",
               background: "var(--surface)",
               color: "var(--foreground)",
               outline: "none",
               boxShadow: "0 1px 6px rgba(32,33,36,.28)",
               textAlign: "center",
-              letterSpacing: "6px",
+              letterSpacing: "4px",
               fontFamily: "'Google Sans Mono', 'Roboto Mono', monospace",
               transition: "all 0.2s ease"
             }}
