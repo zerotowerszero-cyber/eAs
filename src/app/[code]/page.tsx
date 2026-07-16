@@ -6,54 +6,55 @@ import ScanButton from '@/components/ScanButton';
 // List of commonly known domains that skip the warning screen.
 // We check if the hostname ends with these domains (to catch subdomains).
 const SAFE_DOMAINS = [
-  'google.com',
-  'youtube.com',
-  'github.com',
-  'roblox.com',
-  'twitter.com',
-  'x.com',
-  'facebook.com',
-  'instagram.com',
-  'linkedin.com',
-  'tiktok.com',
-  'apple.com',
-  'microsoft.com',
-  'amazon.com',
-  'netflix.com',
-  'eas.cx',
-  'vercel.app',
-  'vercel.com',
-  'reddit.com',
-  'wikipedia.org',
-  'yahoo.com',
-  'bing.com',
-  'twitch.tv',
-  'discord.com',
-  'spotify.com',
-  'pinterest.com',
-  'tumblr.com',
-  'wordpress.com',
-  'medium.com',
-  'quora.com',
-  'imgur.com',
-  'paypal.com',
-  'stripe.com',
-  'slack.com',
-  'zoom.us',
-  'adobe.com',
-  'dropbox.com',
-  'chatgpt.com',
-  'openai.com',
-  'anthropic.com',
-  'hulu.com',
-  'disneyplus.com',
-  'hbomax.com',
-  'vimeo.com',
-  'soundcloud.com',
-  'epicgames.com',
-  'steampowered.com',
-  'ea.com',
-  'ubisoft.com'
+  // Tech & Social
+  'google.com', 'youtube.com', 'github.com', 'roblox.com', 'twitter.com', 'x.com',
+  'facebook.com', 'instagram.com', 'linkedin.com', 'tiktok.com', 'apple.com',
+  'microsoft.com', 'amazon.com', 'netflix.com', 'eas.cx', 'vercel.app', 'vercel.com',
+  'reddit.com', 'wikipedia.org', 'yahoo.com', 'bing.com', 'twitch.tv', 'discord.com',
+  'spotify.com', 'pinterest.com', 'tumblr.com', 'wordpress.com', 'medium.com',
+  'quora.com', 'imgur.com', 'paypal.com', 'stripe.com', 'slack.com', 'zoom.us',
+  'adobe.com', 'dropbox.com', 'chatgpt.com', 'openai.com', 'anthropic.com',
+  
+  // Entertainment & Gaming
+  'hulu.com', 'disneyplus.com', 'hbomax.com', 'vimeo.com', 'soundcloud.com',
+  'epicgames.com', 'steampowered.com', 'ea.com', 'ubisoft.com', 'playstation.com', 'xbox.com', 'nintendo.com',
+  
+  // News & Media
+  'nytimes.com', 'cnn.com', 'bbc.com', 'bbc.co.uk', 'foxnews.com', 'washingtonpost.com',
+  'wsj.com', 'theguardian.com', 'npr.org', 'bloomberg.com', 'reuters.com', 'apnews.com',
+  'usatoday.com', 'cnbc.com', 'forbes.com', 'businessinsider.com', 'time.com',
+  
+  // E-commerce & Retail
+  'walmart.com', 'target.com', 'bestbuy.com', 'homedepot.com', 'lowes.com',
+  'costco.com', 'macys.com', 'nike.com', 'adidas.com', 'ikea.com', 'ebay.com',
+  'etsy.com', 'wayfair.com', 'cvs.com', 'walgreens.com',
+  
+  // Banking & Finance
+  'chase.com', 'bankofamerica.com', 'wellsfargo.com', 'capitalone.com', 'citi.com',
+  'americanexpress.com', 'discover.com', 'fidelity.com', 'vanguard.com', 'schwab.com',
+  'zillow.com', 'mint.com',
+  
+  // Travel & Hospitality
+  'expedia.com', 'booking.com', 'airbnb.com', 'tripadvisor.com', 'hotels.com',
+  'kayak.com', 'marriott.com', 'hilton.com', 'delta.com', 'aa.com', 'united.com',
+  'southwest.com', 'uber.com', 'lyft.com',
+  
+  // Food & Delivery
+  'doordash.com', 'ubereats.com', 'grubhub.com', 'postmates.com', 'instacart.com',
+  'dominos.com', 'starbucks.com', 'mcdonalds.com', 'pizzahut.com', 'papajohns.com',
+  
+  // Health & Medical
+  'webmd.com', 'mayoclinic.org', 'clevelandclinic.org', 'healthline.com',
+  
+  // Sports & Auto
+  'espn.com', 'nfl.com', 'nba.com', 'mlb.com', 'nhl.com', 'cbssports.com',
+  'bleacherreport.com', 'ford.com', 'chevrolet.com', 'toyota.com', 'honda.com', 'tesla.com',
+  
+  // Utilities & Information
+  'weather.com', 'accuweather.com', 'zillow.com', 'yelp.com', 'imdb.com',
+  
+  // Global Safe TLDs (This automatically whitelists all subdomains of these TLDs)
+  'gov', 'edu', 'mil'
 ];
 
 function isDomainSafe(url: string): boolean {
