@@ -10,55 +10,50 @@ type Provider = {
 
 const PROVIDERS: Provider[] = [
   {
-    id: "cinesrc",
-    name: "CineSrc (Recommended)",
-    getUrl: (type, id, s, e) => `https://cinesrc.st/embed/${type}/${id}${type === "tv" ? `?s=${s}&e=${e}` : ""}`
-  },
-  {
     id: "vidlink",
     name: "VidLink (Fast)",
     getUrl: (type, id, s, e) => `https://vidlink.pro/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
   },
   {
-    id: "vidfast",
-    name: "VidFast",
-    getUrl: (type, id, s, e) => `https://vidfast.pro/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
+    id: "vidsrc-me",
+    name: "VidSrc.me",
+    getUrl: (type, id, s, e) => type === "movie" 
+      ? `https://vidsrc.me/embed/movie?tmdb=${id}` 
+      : `https://vidsrc.me/embed/tv?tmdb=${id}&season=${s}&episode=${e}`
   },
   {
-    id: "videasy",
-    name: "VidEasy",
-    getUrl: (type, id, s, e) => `https://videasy.net/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
+    id: "vidsrc-to",
+    name: "VidSrc.to",
+    getUrl: (type, id, s, e) => `https://vidsrc.to/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
   },
   {
-    id: "fmovies",
-    name: "FMovies",
-    getUrl: (type, id, s, e) => `https://www.fmovies.gd/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
+    id: "vidsrc-pro",
+    name: "VidSrc.pro",
+    getUrl: (type, id, s, e) => `https://vidsrc.pro/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
   },
   {
-    id: "vidzee",
-    name: "VidZee",
-    getUrl: (type, id, s, e) => `https://vidzee.wtf/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
+    id: "superembed",
+    name: "SuperEmbed",
+    getUrl: (type, id, s, e) => type === "movie"
+      ? `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1`
+      : `https://multiembed.mov/directstream.php?video_id=${id}&tmdb=1&s=${s}&e=${e}`
   },
   {
-    id: "vixsrc",
-    name: "VixSrc",
-    getUrl: (type, id, s, e) => `https://vixsrc.to/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
+    id: "embedsu",
+    name: "Embed.su",
+    getUrl: (type, id, s, e) => `https://embed.su/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
   },
   {
-    id: "vidnest",
-    name: "VidNest",
-    getUrl: (type, id, s, e) => `https://vidnest.fun/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
-  },
-
-  {
-    id: "primewire",
-    name: "PrimeWire",
-    getUrl: (type, id, s, e) => `https://primewire.mov/${type}/${id}${type === "tv" ? `?s=${s}&e=${e}` : ""}`
+    id: "autoembed",
+    name: "AutoEmbed",
+    getUrl: (type, id, s, e) => `https://player.autoembed.cc/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
   },
   {
-    id: "aeon-watch",
-    name: "Aeon-Watch",
-    getUrl: (type, id, s, e) => `https://thisiscinema.pages.dev/embed/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
+    id: "2embed",
+    name: "2Embed",
+    getUrl: (type, id, s, e) => type === "movie"
+      ? `https://www.2embed.cc/embed/${id}`
+      : `https://www.2embed.cc/embedtv/${id}&s=${s}&e=${e}`
   }
 ];
 
