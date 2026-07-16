@@ -15,6 +15,13 @@ const SAFE_DOMAINS = [
   'quora.com', 'imgur.com', 'paypal.com', 'stripe.com', 'slack.com', 'zoom.us',
   'adobe.com', 'dropbox.com', 'chatgpt.com', 'openai.com', 'anthropic.com',
   
+  // Sites With Extremely Long/Messy Links (Productivity, Collaboration, Maps)
+  'notion.so', 'notion.site', 'figma.com', 'canva.com', 'trello.com', 'atlassian.net',
+  'sharepoint.com', 'live.com', 'box.com', 'wetransfer.com', 'mega.nz', 'mediafire.com',
+  'surveymonkey.com', 'typeform.com', 'calendly.com', 'cal.com', 'gitlab.com', 'bitbucket.org',
+  'linktr.ee', 'substack.com', 'behance.net', 'dribbble.com', 'artstation.com',
+  'aliexpress.com', 'temu.com', 'shein.com',
+  
   // Entertainment & Gaming
   'hulu.com', 'disneyplus.com', 'hbomax.com', 'vimeo.com', 'soundcloud.com',
   'epicgames.com', 'steampowered.com', 'ea.com', 'ubisoft.com', 'playstation.com', 'xbox.com', 'nintendo.com',
