@@ -60,7 +60,85 @@ export async function saveUrl(code: string, url: string): Promise<void> {
     await client.set(`url:${code}`, url);
   } else {
     const data = getLocalData();
-    data[code] = url;
+    data[`url:${code}`] = url;
     saveLocalData(data);
+  }
+}
+
+// Auth Types
+export interface Invite {
+  token: string;
+  code: string;
+  used: boolean;
+}
+
+export interface AuthCode {
+  code: string;
+  ip: string | null;
+  userAgent: string | null;
+  used: boolean;
+}
+
+export async function createInvite(token: string, code: string): Promise<void> {
+  const client = await getRedisClient();
+  const invite: Invite = { token, code, used: false };
+  const authCode: AuthCode = { code, ip: null, userAgent: null, used: false };
+
+  if (client) {
+    await client.set(`invite:${token}`, JSON.stringify(invite));
+    await client.set(`code:${code}`, JSON.stringify(authCode));
+  } else {
+    const data = getLocalData();
+    data[`invite:${token}`] = JSON.stringify(invite);
+    data[`code:${code}`] = JSON.stringify(authCode);
+    saveLocalData(data);
+  }
+}
+
+export async function getInvite(token: string): Promise<Invite | null> {
+  const client = await getRedisClient();
+  let strData = null;
+  if (client) {
+    strData = await client.get(`invite:${token}`);
+  } else {
+    strData = getLocalData()[`invite:${token}`];
+  }
+  return strData ? JSON.parse(strData) : null;
+}
+
+export async function getAuthCode(code: string): Promise<AuthCode | null> {
+  const client = await getRedisClient();
+  let strData = null;
+  if (client) {
+    strData = await client.get(`code:${code}`);
+  } else {
+    strData = getLocalData()[`code:${code}`];
+  }
+  return strData ? JSON.parse(strData) : null;
+}
+
+export async function updateAuthCode(authCode: AuthCode): Promise<void> {
+  const client = await getRedisClient();
+  if (client) {
+    await client.set(`code:${authCode.code}`, JSON.stringify(authCode));
+  } else {
+    const data = getLocalData();
+    data[`code:${authCode.code}`] = JSON.stringify(authCode);
+    saveLocalData(data);
+  }
+}
+
+export async function markInviteUsed(token: string): Promise<void> {
+  const invite = await getInvite(token);
+  if (invite) {
+    invite.used = true;
+    const client = await getRedisClient();
+    if (client) {
+      await client.set(`invite:${token}`, JSON.stringify(invite));
+    } else {
+      const data = getLocalData();
+      data[`invite:${token}`] = JSON.stringify(invite);
+      saveLocalData(data);
+    }
   }
 }
