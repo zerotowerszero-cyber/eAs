@@ -62,13 +62,13 @@ export default async function RedirectPage({
     redirect(originalUrl);
   }
 
-  // Otherwise, render the warning UI
+  // Otherwise, render the warning UI that perfectly matches the site's design system
   return (
-    <main style={{ height: "100dvh", display: "flex", flexDirection: "column", backgroundColor: "#f8f9fa" }}>
+    <main style={{ height: "100dvh", display: "flex", flexDirection: "column" }}>
       <Header />
       
-      {/* Spacer to push content exactly below the fixed 64px header */}
-      <div style={{ height: "64px", flexShrink: 0 }}></div>
+      {/* Optical centering spacer */}
+      <div style={{ height: "32px", flexShrink: 0 }}></div>
 
       <div style={{ 
         flexGrow: 1, 
@@ -80,17 +80,13 @@ export default async function RedirectPage({
         boxSizing: "border-box"
       }}>
         
-        <div style={{
-          background: "#ffffff",
-          borderRadius: "24px",
-          padding: "48px 40px",
-          maxWidth: "600px",
-          width: "100%",
-          boxShadow: "0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06)",
-          textAlign: "center",
-          display: "flex",
-          flexDirection: "column",
-          alignItems: "center"
+        <div style={{ 
+          display: "flex", 
+          flexDirection: "column", 
+          gap: "32px", 
+          width: "100%", 
+          maxWidth: "700px", 
+          alignItems: "center" 
         }}>
           
           <div style={{ 
@@ -101,8 +97,7 @@ export default async function RedirectPage({
             borderRadius: "50%",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
-            marginBottom: "24px"
+            justifyContent: "center"
           }}>
             <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
               <path d="M10.29 3.86L1.82 18a2 2 0 0 0 1.71 3h16.94a2 2 0 0 0 1.71-3L13.71 3.86a2 2 0 0 0-3.42 0z"></path>
@@ -111,55 +106,56 @@ export default async function RedirectPage({
             </svg>
           </div>
 
-          <h1 style={{ 
-            fontSize: "28px", 
-            fontWeight: "500", 
-            color: "#202124", 
-            marginBottom: "16px",
-            letterSpacing: "-0.5px",
-            fontFamily: "'Google Sans Display', 'Google Sans', sans-serif"
-          }}>
+          <h1 className="hero-title" style={{ margin: 0, lineHeight: 1 }}>
             This website isn't commonly known
           </h1>
           
-          <p style={{
-            fontSize: "16px",
-            color: "#5f6368",
-            marginBottom: "24px",
-            lineHeight: "1.5"
-          }}>
+          <p className="hero-subtitle" style={{ margin: 0, lineHeight: 1.5, textAlign: "center", maxWidth: "600px" }}>
             The short link you clicked is trying to send you to a website that isn't on our list of safe, commonly known domains. Please review the link below before continuing.
           </p>
 
           <div style={{
             width: "100%",
-            padding: "16px",
-            backgroundColor: "#f1f3f4",
-            borderRadius: "12px",
-            marginBottom: "40px",
-            wordBreak: "break-all",
-            color: "#202124",
-            fontWeight: "500"
+            height: "64px",
+            padding: "0 32px",
+            fontSize: "18px",
+            color: "var(--foreground)",
+            background: "var(--surface)",
+            border: "1px solid var(--border)",
+            borderRadius: "40px",
+            boxShadow: "var(--shadow-sm)",
+            boxSizing: "border-box",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+            whiteSpace: "nowrap",
+            overflow: "hidden",
+            textOverflow: "ellipsis"
           }}>
             {originalUrl}
           </div>
 
-          <div style={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%" }}>
+          <div style={{ display: "flex", flexDirection: "column", gap: "16px", width: "100%", alignItems: "center" }}>
             <a 
               href="/"
               style={{
-                background: "#1a73e8",
+                background: "var(--primary)",
                 color: "#ffffff",
                 border: "none",
-                borderRadius: "24px",
-                padding: "14px 32px",
-                fontSize: "16px",
+                borderRadius: "40px",
+                height: "64px",
+                padding: "0 48px",
+                fontSize: "18px",
                 fontWeight: "500",
                 cursor: "pointer",
                 textDecoration: "none",
-                transition: "background 0.2s ease",
-                width: "100%",
-                display: "inline-block"
+                transition: "all 0.2s ease",
+                boxShadow: "var(--shadow-sm)",
+                boxSizing: "border-box",
+                display: "flex",
+                alignItems: "center",
+                justifyContent: "center",
+                width: "100%"
               }}
             >
               Go back to safety (Recommended)
@@ -169,16 +165,20 @@ export default async function RedirectPage({
               href={originalUrl}
               style={{
                 background: "transparent",
-                color: "#5f6368",
+                color: "var(--foreground)",
+                opacity: 0.7,
                 border: "none",
-                padding: "14px 32px",
+                padding: "16px 32px",
                 fontSize: "16px",
                 fontWeight: "500",
                 cursor: "pointer",
                 textDecoration: "underline",
-                width: "100%",
-                display: "inline-block"
+                transition: "opacity 0.2s ease",
+                display: "inline-block",
+                textAlign: "center"
               }}
+              onMouseOver={(e) => e.currentTarget.style.opacity = "1"}
+              onMouseOut={(e) => e.currentTarget.style.opacity = "0.7"}
             >
               Yes, I am sure. Continue to site.
             </a>
