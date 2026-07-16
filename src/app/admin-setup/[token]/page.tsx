@@ -11,8 +11,10 @@ export default async function AdminSetupPage({ params }: { params: { token: stri
     return (
       <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
         <Header />
-        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center" }}>
+        <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
           <h1 className="hero-title" style={{ fontSize: "24px" }}>404 - Not Found</h1>
+          <p style={{ color: "#5f6368", marginTop: "16px" }}>Expected: {expectedToken}</p>
+          <p style={{ color: "#5f6368" }}>Received: {token}</p>
         </div>
       </main>
     );

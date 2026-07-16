@@ -33,7 +33,11 @@ function getLocalData(): Record<string, string> {
 }
 
 function saveLocalData(data: Record<string, string>) {
-  fs.writeFileSync(LOCAL_DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  try {
+    fs.writeFileSync(LOCAL_DB_PATH, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (e) {
+    console.error("Failed to write to local DB on Vercel (Expected if Redis is missing)", e);
+  }
 }
 
 /**
