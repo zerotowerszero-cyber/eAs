@@ -67,6 +67,7 @@ export default async function RedirectPage({
   return (
     <main style={{ height: "100dvh", display: "flex", flexDirection: "column", position: "relative" }}>
       <Header />
+      <ScanButton url={originalUrl} />
       
       {/* Optical centering spacer */}
       <div style={{ height: "32px", flexShrink: 0 }}></div>
@@ -173,8 +174,6 @@ export default async function RedirectPage({
               Go back to safety (Recommended)
             </a>
             
-            <ScanButton url={originalUrl} />
-
             <a 
               href={originalUrl}
               style={{
