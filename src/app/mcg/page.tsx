@@ -35,15 +35,8 @@ export default async function MasterCodeGeneratorPage() {
   return (
     <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       <Header />
-      <div style={{ flex: 1, padding: "32px 24px", maxWidth: "800px", margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", alignItems: "center" }}>
+      <div style={{ flex: 1, padding: "32px 24px", maxWidth: "800px", margin: "0 auto", width: "100%", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
         
-        <h1 className="hero-title" style={{ fontSize: "clamp(36px, 5vw, 48px)", margin: "8vh auto 16px auto", textAlign: "center" }}>
-          Master Code Generator
-        </h1>
-        <p style={{ color: "#5f6368", fontSize: "16px", marginBottom: "48px", textAlign: "center" }}>
-          Authorized Secure Portal. Generate single-use access codes.
-        </p>
-
         <McgClient />
 
       </div>

@@ -32,76 +32,62 @@ export default function McgClient() {
   };
 
   return (
-    <div style={{ width: "100%", maxWidth: "500px", display: "flex", flexDirection: "column", gap: "24px" }}>
+    <div style={{ width: "100%", maxWidth: "800px", display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", minHeight: "60vh" }}>
       
+      {error && <div style={{ color: "#d93025", textAlign: "center", fontWeight: "500", marginBottom: "24px" }}>{error}</div>}
+
       {code ? (
-        <div style={{ textAlign: "center", marginBottom: "16px" }}>
-          <div style={{ fontSize: "14px", color: "#5f6368", marginBottom: "12px", fontWeight: "500" }}>NEW SINGLE-USE ACCESS CODE</div>
-          <div style={{
-            background: "var(--surface)",
-            border: "1px solid var(--border)",
-            borderRadius: "24px",
-            padding: "24px",
-            fontSize: "40px",
-            fontWeight: "700",
-            letterSpacing: "6px",
-            fontFamily: "monospace",
-            color: "var(--primary)",
-            boxShadow: "var(--shadow-sm)"
-          }}>
+        <div style={{ textAlign: "center", width: "100%" }}>
+          <h1 
+            className="hero-title" 
+            style={{ 
+              fontSize: "clamp(36px, 5vw, 48px)", 
+              margin: "0 auto", 
+              textAlign: "center",
+              fontFamily: "'Google Sans Mono', 'Roboto Mono', monospace",
+              letterSpacing: "4px",
+              color: "var(--foreground)"
+            }}
+          >
             {code}
-          </div>
+          </h1>
           <button 
             onClick={() => navigator.clipboard.writeText(code)}
             style={{
-              marginTop: "16px",
+              marginTop: "24px",
               background: "transparent",
               border: "none",
               color: "var(--primary)",
               cursor: "pointer",
               fontWeight: "500",
-              fontSize: "14px"
+              fontSize: "16px",
+              padding: "8px 16px",
+              borderRadius: "20px"
             }}
+            onMouseOver={(e) => e.currentTarget.style.background = "var(--surface)"}
+            onMouseOut={(e) => e.currentTarget.style.background = "transparent"}
           >
             Copy to Clipboard
           </button>
         </div>
-      ) : null}
-
-      {error && <div style={{ color: "#d93025", textAlign: "center", fontWeight: "500" }}>{error}</div>}
-
-      <button
-        onClick={handleGenerate}
-        disabled={loading}
-        style={{
-          background: "var(--primary)",
-          color: "white",
-          border: "none",
-          borderRadius: "32px",
-          height: "64px",
-          fontSize: "18px",
-          fontWeight: "500",
-          cursor: loading ? "not-allowed" : "pointer",
-          transition: "transform 0.2s ease, box-shadow 0.2s ease",
-          boxShadow: "0 1px 6px rgba(32,33,36,.28)",
-          opacity: loading ? 0.7 : 1
-        }}
-        onMouseOver={(e) => {
-          if (!loading) {
-            e.currentTarget.style.transform = "translateY(-2px)";
-            e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 4px 12px rgba(32,33,36,.15)";
-          }
-        }}
-        onMouseOut={(e) => {
-          if (!loading) {
-            e.currentTarget.style.transform = "translateY(0)";
-            e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
-          }
-        }}
-      >
-        {loading ? "Generating..." : "Generate Code"}
-      </button>
-
+      ) : (
+        <button
+          onClick={handleGenerate}
+          disabled={loading}
+          style={{
+            background: "transparent",
+            color: loading ? "#5f6368" : "var(--foreground)",
+            border: "none",
+            fontSize: "24px",
+            fontWeight: "500",
+            cursor: loading ? "not-allowed" : "pointer",
+            transition: "opacity 0.2s ease",
+            opacity: loading ? 0.5 : 1
+          }}
+        >
+          {loading ? "..." : "mcg"}
+        </button>
+      )}
     </div>
   );
 }
