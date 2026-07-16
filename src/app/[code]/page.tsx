@@ -177,8 +177,6 @@ export default async function RedirectPage({
                 display: "inline-block",
                 textAlign: "center"
               }}
-              onMouseOver={(e) => e.currentTarget.style.opacity = "1"}
-              onMouseOut={(e) => e.currentTarget.style.opacity = "0.7"}
             >
               Yes, I am sure. Continue to site.
             </a>
