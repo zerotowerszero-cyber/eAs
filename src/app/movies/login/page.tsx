@@ -45,17 +45,13 @@ export default function LoginPage() {
     <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       <Header />
       <div style={{ flex: 1, padding: "32px 24px", display: "flex", alignItems: "center", justifyContent: "center", flexDirection: "column" }}>
-        
-        <h1 className="hero-title" style={{ fontSize: "clamp(36px, 5vw, 48px)", margin: "0 auto 32px auto", textAlign: "center" }}>
-          Vault Access
-        </h1>
 
         <form onSubmit={handleSubmit} style={{ width: "100%", maxWidth: "400px", display: "flex", flexDirection: "column", gap: "16px" }}>
           <input
             type="text"
             value={code}
             onChange={(e) => setCode(e.target.value)}
-            placeholder="Enter 10-digit access code"
+            placeholder="Enter password"
             maxLength={10}
             style={{
               width: "100%",
@@ -69,8 +65,8 @@ export default function LoginPage() {
               outline: "none",
               boxShadow: "var(--shadow-sm)",
               textAlign: "center",
-              letterSpacing: "2px",
-              fontFamily: "monospace"
+              letterSpacing: "4px",
+              fontFamily: "'Google Sans Mono', 'Roboto Mono', monospace"
             }}
           />
           {error && <div style={{ color: "#d93025", textAlign: "center", fontSize: "14px", fontWeight: "500" }}>{error}</div>}
@@ -90,7 +86,7 @@ export default function LoginPage() {
               transition: "all 0.2s ease"
             }}
           >
-            {loading ? "Verifying..." : "Enter Vault"}
+            {loading ? "Verifying..." : "Submit"}
           </button>
         </form>
 
