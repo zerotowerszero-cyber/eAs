@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server';
-import nacl from 'tweetnacl';
+import { verifyKey } from 'discord-interactions';
 import { createInvite } from '@/lib/db';
 import crypto from 'crypto';
 
@@ -14,11 +14,7 @@ function verifySignature(req: NextRequest, body: string): boolean {
   }
 
   try {
-    return nacl.sign.detached.verify(
-      Buffer.from(timestamp + body),
-      Buffer.from(signature, 'hex'),
-      Buffer.from(publicKey, 'hex')
-    );
+    return verifyKey(body, signature, timestamp, publicKey);
   } catch (_) {
     return false;
   }
