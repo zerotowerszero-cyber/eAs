@@ -95,7 +95,8 @@ export default function LinkShortener() {
               required
               style={{
                 width: "100%",
-                padding: "20px 32px",
+                height: "64px",
+                padding: "0 32px",
                 fontSize: "18px",
                 color: "var(--foreground)",
                 background: "var(--surface)",
@@ -150,7 +151,8 @@ export default function LinkShortener() {
 
           {shortUrl && (
             <div style={{ 
-              padding: "20px 32px", 
+              height: "64px",
+              padding: "0 32px", 
               background: "var(--surface)", 
               borderRadius: "40px",
               border: "1px solid var(--border)",
@@ -170,7 +172,7 @@ export default function LinkShortener() {
                 color: "var(--primary)", 
                 textDecoration: "none", 
                 fontWeight: "500", 
-                fontSize: "20px",
+                fontSize: "18px",
                 wordBreak: "break-all" 
               }}
             >
