@@ -10,6 +10,11 @@ type Provider = {
 
 const PROVIDERS: Provider[] = [
   {
+    id: "cinesrc",
+    name: "CineSrc (Recommended)",
+    getUrl: (type, id, s, e) => `https://cinesrc.st/embed/${type}/${id}${type === "tv" ? `?s=${s}&e=${e}` : ""}`
+  },
+  {
     id: "vidlink",
     name: "VidLink (Fast)",
     getUrl: (type, id, s, e) => `https://vidlink.pro/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
@@ -44,11 +49,7 @@ const PROVIDERS: Provider[] = [
     name: "VidNest",
     getUrl: (type, id, s, e) => `https://vidnest.fun/${type}/${id}${type === "tv" ? `/${s}/${e}` : ""}`
   },
-  {
-    id: "cinesrc",
-    name: "CineSrc",
-    getUrl: (type, id, s, e) => `https://cinesrc.st/embed/${type}/${id}${type === "tv" ? `?s=${s}&e=${e}` : ""}`
-  },
+
   {
     id: "primewire",
     name: "PrimeWire",
