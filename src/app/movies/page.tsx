@@ -255,9 +255,7 @@ function MoviesSearchContent() {
               left: 0,
               right: 0,
               bottom: 0,
-              background: "rgba(0, 0, 0, 0.75)",
-              backdropFilter: "blur(12px)",
-              WebkitBackdropFilter: "blur(12px)",
+              background: "transparent",
               display: "flex",
               alignItems: "center",
               justifyContent: "center",
@@ -273,27 +271,27 @@ function MoviesSearchContent() {
                 width: "100%",
                 maxWidth: "600px",
                 overflow: "hidden",
-                boxShadow: "0 24px 48px rgba(0,0,0,0.5)",
+                boxShadow: "0 24px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1)",
                 display: "flex",
                 flexDirection: "column",
-                border: "1px solid rgba(255,255,255,0.1)",
-                color: "var(--foreground)"
+                color: "var(--foreground)",
+                maxHeight: "90vh",
+                overflowY: "auto"
               }}
               onClick={(e) => e.stopPropagation()}
             >
               {(selectedInfo.backdrop_path || selectedInfo.poster_path) && (
-                <div style={{ width: "100%", height: "240px", position: "relative" }}>
+                <div style={{ width: "100%", height: "240px" }}>
                   <img 
                     src={`https://image.tmdb.org/t/p/w780${selectedInfo.backdrop_path || selectedInfo.poster_path}`} 
                     alt={selectedInfo.title || selectedInfo.name} 
                     style={{ width: "100%", height: "100%", objectFit: "cover" }} 
                   />
-                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "120px", background: "linear-gradient(to top, var(--surface), transparent)" }} />
                 </div>
               )}
               
-              <div style={{ padding: "24px", marginTop: (selectedInfo.backdrop_path || selectedInfo.poster_path) ? "-48px" : "0", position: "relative", zIndex: 2 }}>
-                <h2 style={{ fontSize: "28px", margin: "0 0 12px 0", fontWeight: "600", color: "var(--foreground)", textShadow: (selectedInfo.backdrop_path || selectedInfo.poster_path) ? "0 2px 4px rgba(0,0,0,0.5)" : "none" }}>
+              <div style={{ padding: "24px" }}>
+                <h2 style={{ fontSize: "28px", margin: "0 0 12px 0", fontWeight: "600", color: "var(--foreground)" }}>
                   {selectedInfo.title || selectedInfo.name}
                 </h2>
                 
