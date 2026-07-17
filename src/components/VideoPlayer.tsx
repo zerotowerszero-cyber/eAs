@@ -180,6 +180,7 @@ export default function VideoPlayer({ type, tmdbId, season, episode }: VideoPlay
         <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0 0 16px 0" }}>
           <h3 style={{ margin: 0, fontSize: "18px" }}>Select Provider</h3>
           <button
+            className="mobile-only"
             onClick={() => setIsFullscreen(true)}
             style={{
               background: "transparent",

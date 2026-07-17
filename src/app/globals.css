@@ -69,6 +69,16 @@ a {
   padding: 0 24px;
 }
 
+.mobile-only {
+  display: flex !important;
+}
+
+@media (min-width: 768px) {
+  .mobile-only {
+    display: none !important;
+  }
+}
+
 /* Header */
 .header {
   position: fixed;
