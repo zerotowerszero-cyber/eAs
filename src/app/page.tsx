@@ -3,6 +3,7 @@
 import Header from "@/components/Header";
 import { useState } from "react";
 import { useRouter } from "next/navigation";
+import Link from "next/link";
 
 export default function Home() {
   const router = useRouter();
@@ -51,6 +52,23 @@ export default function Home() {
           </p>
         </section>
       </div>
+
+      <footer style={{ 
+        padding: "24px", 
+        display: "flex", 
+        justifyContent: "center", 
+        gap: "24px", 
+        color: "#5f6368", 
+        fontSize: "14px",
+        background: "var(--background)"
+      }}>
+        <Link href="/privacy-policy" style={{ textDecoration: "none", color: "inherit" }} onMouseOver={e => e.currentTarget.style.textDecoration = "underline"} onMouseOut={e => e.currentTarget.style.textDecoration = "none"}>
+          Privacy Policy
+        </Link>
+        <Link href="/terms-of-service" style={{ textDecoration: "none", color: "inherit" }} onMouseOver={e => e.currentTarget.style.textDecoration = "underline"} onMouseOut={e => e.currentTarget.style.textDecoration = "none"}>
+          Terms of Service
+        </Link>
+      </footer>
     </main>
   );
 }
