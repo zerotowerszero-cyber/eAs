@@ -149,6 +149,7 @@ export default function VideoPlayer({ type, tmdbId, season, episode }: VideoPlay
             allow="autoplay; encrypted-media"
           />
         )}
+      </div>
         
       {/* Controls Below Player */}
       <div style={{ marginTop: "32px" }}>
