@@ -7,12 +7,21 @@ import { useRouter } from "next/navigation";
 export default function Home() {
   const router = useRouter();
   const [clickCount, setClickCount] = useState(0);
+  const [codeClickCount, setCodeClickCount] = useState(0);
 
   const handleEasClick = () => {
     const newCount = clickCount + 1;
     setClickCount(newCount);
     if (newCount >= 3) {
       router.push("/movies");
+    }
+  };
+
+  const handleCodeClick = () => {
+    const newCount = codeClickCount + 1;
+    setCodeClickCount(newCount);
+    if (newCount >= 5) {
+      router.push("/notepad");
     }
   };
 
@@ -23,7 +32,12 @@ export default function Home() {
       <div className="container" style={{ flexGrow: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
         <section className="hero" style={{ padding: 0 }}>
           <h1 className="hero-title animate-fade-up">
-            Code anything.
+            <span 
+              onClick={handleCodeClick} 
+              style={{ cursor: "text" }}
+            >
+              Code
+            </span> anything.
             <br />
             Make it <span 
               onClick={handleEasClick} 

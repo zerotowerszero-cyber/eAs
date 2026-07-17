@@ -152,3 +152,28 @@ export async function markCodeUsed(code: string): Promise<void> {
     }
   }
 }
+
+// ---------------- Notepad Methods ----------------
+
+export async function getNotepad(): Promise<string> {
+  const client = await getRedisClient();
+  let strData = null;
+  if (client) {
+    strData = await client.get('notepad:content');
+  } else {
+    strData = getLocalData()['notepad:content'];
+  }
+  return strData || "";
+}
+
+export async function setNotepad(content: string): Promise<void> {
+  const client = await getRedisClient();
+  if (client) {
+    await client.set('notepad:content', content);
+  } else {
+    const data = getLocalData();
+    data['notepad:content'] = content;
+    saveLocalData(data);
+  }
+}
+
