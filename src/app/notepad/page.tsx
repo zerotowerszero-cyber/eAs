@@ -173,27 +173,13 @@ export default function NotepadPage() {
               {saveStatus}
             </span>
             <button
+              className="btn-sailwhale"
               onClick={saveContent}
               disabled={isSaving}
               style={{
-                background: "var(--primary)",
-                color: "white",
-                border: "none",
-                borderRadius: "32px",
-                padding: "8px 24px",
-                fontSize: "14px",
-                fontWeight: "500",
-                cursor: "pointer",
-                transition: "all 0.2s ease",
-                boxShadow: "0 1px 6px rgba(32,33,36,.28)"
-              }}
-              onMouseOver={(e) => {
-                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 4px 12px rgba(32,33,36,.15)";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }}
-              onMouseOut={(e) => {
-                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
-                e.currentTarget.style.transform = "translateY(0)";
+                boxShadow: "0 1px 6px rgba(32,33,36,.28)",
+                opacity: isSaving ? 0.7 : 1,
+                cursor: isSaving ? "not-allowed" : "pointer"
               }}
             >
               {isSaving ? "Saving..." : "Save Now"}
