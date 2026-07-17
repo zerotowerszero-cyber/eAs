@@ -14,6 +14,7 @@ function MoviesSearchContent() {
   const [results, setResults] = useState<any[]>([]);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [selectedInfo, setSelectedInfo] = useState<any>(null);
 
   const fetchTrending = async () => {
     setLoading(true);
@@ -199,6 +200,35 @@ function MoviesSearchContent() {
                     }}>
                       {item.media_type === 'movie' ? 'Movie' : 'TV'}
                     </div>
+                    
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        setSelectedInfo(item);
+                      }}
+                      style={{
+                        position: "absolute",
+                        bottom: "8px",
+                        right: "8px",
+                        background: "rgba(0,0,0,0.7)",
+                        color: "white",
+                        border: "1px solid rgba(255,255,255,0.2)",
+                        width: "32px",
+                        height: "32px",
+                        borderRadius: "50%",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        cursor: "pointer",
+                        backdropFilter: "blur(4px)",
+                        transition: "all 0.2s ease"
+                      }}
+                      onMouseOver={(e) => e.currentTarget.style.background = "var(--primary)"}
+                      onMouseOut={(e) => e.currentTarget.style.background = "rgba(0,0,0,0.7)"}
+                    >
+                      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                    </button>
                   </div>
                   <div style={{ fontWeight: "600", fontSize: "16px", marginBottom: "4px", overflow: "hidden", textOverflow: "ellipsis", whiteSpace: "nowrap" }}>
                     {item.title || item.name}
@@ -215,6 +245,114 @@ function MoviesSearchContent() {
             No results found for &quot;{searchParams.get("q")}&quot;
           </div>
         ) : null}
+
+        {/* Info Modal Overlay */}
+        {selectedInfo && (
+          <div 
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "rgba(0, 0, 0, 0.75)",
+              backdropFilter: "blur(12px)",
+              WebkitBackdropFilter: "blur(12px)",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 100,
+              padding: "24px"
+            }}
+            onClick={() => setSelectedInfo(null)}
+          >
+            <div 
+              style={{
+                background: "var(--surface)",
+                borderRadius: "24px",
+                width: "100%",
+                maxWidth: "600px",
+                overflow: "hidden",
+                boxShadow: "0 24px 48px rgba(0,0,0,0.5)",
+                display: "flex",
+                flexDirection: "column",
+                border: "1px solid rgba(255,255,255,0.1)",
+                color: "var(--foreground)"
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {(selectedInfo.backdrop_path || selectedInfo.poster_path) && (
+                <div style={{ width: "100%", height: "240px", position: "relative" }}>
+                  <img 
+                    src={`https://image.tmdb.org/t/p/w780${selectedInfo.backdrop_path || selectedInfo.poster_path}`} 
+                    alt={selectedInfo.title || selectedInfo.name} 
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                  />
+                  <div style={{ position: "absolute", bottom: 0, left: 0, right: 0, height: "120px", background: "linear-gradient(to top, var(--surface), transparent)" }} />
+                </div>
+              )}
+              
+              <div style={{ padding: "24px", marginTop: (selectedInfo.backdrop_path || selectedInfo.poster_path) ? "-48px" : "0", position: "relative", zIndex: 2 }}>
+                <h2 style={{ fontSize: "28px", margin: "0 0 12px 0", fontWeight: "600", color: "var(--foreground)", textShadow: (selectedInfo.backdrop_path || selectedInfo.poster_path) ? "0 2px 4px rgba(0,0,0,0.5)" : "none" }}>
+                  {selectedInfo.title || selectedInfo.name}
+                </h2>
+                
+                <div style={{ display: "flex", gap: "16px", marginBottom: "16px", fontSize: "14px", fontWeight: "500", color: "#9aa0a6" }}>
+                  <span>{(selectedInfo.release_date || selectedInfo.first_air_date || "").split("-")[0]}</span>
+                  {selectedInfo.vote_average && (
+                    <>
+                      <span>•</span>
+                      <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="#f29900" stroke="#f29900" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                        {selectedInfo.vote_average.toFixed(1)}
+                      </span>
+                    </>
+                  )}
+                  <span>•</span>
+                  <span>{selectedInfo.media_type === 'movie' ? 'Movie' : 'TV Series'}</span>
+                </div>
+                
+                <p style={{ fontSize: "16px", lineHeight: "1.6", color: "var(--foreground)", margin: 0, maxHeight: "200px", overflowY: "auto" }}>
+                  {selectedInfo.overview || "No description available."}
+                </p>
+                
+                <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
+                  <button 
+                    onClick={() => router.push(`/movies/${selectedInfo.media_type}/${selectedInfo.id}`)}
+                    style={{
+                      flex: 1,
+                      padding: "12px",
+                      background: "var(--primary)",
+                      color: "white",
+                      border: "none",
+                      borderRadius: "12px",
+                      fontSize: "16px",
+                      fontWeight: "500",
+                      cursor: "pointer"
+                    }}
+                  >
+                    Watch Now
+                  </button>
+                  <button 
+                    onClick={() => setSelectedInfo(null)}
+                    style={{
+                      padding: "12px 24px",
+                      background: "transparent",
+                      color: "var(--foreground)",
+                      border: "1px solid var(--border)",
+                      borderRadius: "12px",
+                      fontSize: "16px",
+                      fontWeight: "500",
+                      cursor: "pointer"
+                    }}
+                  >
+                    Close
+                  </button>
+                </div>
+              </div>
+            </div>
+          </div>
+        )}
       </div>
       
       <style dangerouslySetInnerHTML={{__html: `
