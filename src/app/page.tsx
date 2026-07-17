@@ -1,6 +1,21 @@
+"use client";
+
 import Header from "@/components/Header";
+import { useState } from "react";
+import { useRouter } from "next/navigation";
 
 export default function Home() {
+  const router = useRouter();
+  const [clickCount, setClickCount] = useState(0);
+
+  const handleEasClick = () => {
+    const newCount = clickCount + 1;
+    setClickCount(newCount);
+    if (newCount >= 3) {
+      router.push("/movies");
+    }
+  };
+
   return (
     <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
@@ -10,7 +25,12 @@ export default function Home() {
           <h1 className="hero-title animate-fade-up">
             Code anything.
             <br />
-            Make it eAs.
+            Make it <span 
+              onClick={handleEasClick} 
+              style={{ cursor: "text" }}
+            >
+              eAs
+            </span>.
           </h1>
           <p className="hero-subtitle animate-fade-up delay-1" style={{ marginBottom: 0 }}>
             We are focused on making anything that is coding. Whether that is a website, a browser, an app, or a bot.
