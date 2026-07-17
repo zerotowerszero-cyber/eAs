@@ -112,7 +112,6 @@ interface VideoPlayerProps {
 export default function VideoPlayer({ type, tmdbId, season, episode }: VideoPlayerProps) {
   const [activeProvider, setActiveProvider] = useState<Provider>(PROVIDERS[0]);
   const [iframeKey, setIframeKey] = useState(0); // To force reload iframe
-  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const url = activeProvider.getUrl(type, tmdbId, season, episode);
 
@@ -127,11 +126,14 @@ export default function VideoPlayer({ type, tmdbId, season, episode }: VideoPlay
   return (
     <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "32px" }}>
       {/* Video Player */}
-      <div style={
-        isFullscreen 
-          ? { position: "fixed", top: 0, left: 0, width: "100vw", height: "100dvh", zIndex: 9999, background: "#000" }
-          : { width: "100%", aspectRatio: "16/9", background: "#000", borderRadius: "16px", overflow: "hidden", boxShadow: "var(--shadow-md)", position: "relative" }
-      }>
+      <div style={{ 
+        width: "100%", 
+        aspectRatio: "16/9", 
+        background: "#000", 
+        borderRadius: "16px", 
+        overflow: "hidden",
+        boxShadow: "var(--shadow-md)"
+      }}>
         {type === 'tv' && (!season || !episode) ? (
           <div style={{ width: "100%", height: "100%", display: "flex", alignItems: "center", justifyContent: "center", color: "white" }}>
             Please select a season and episode to start watching.
@@ -148,59 +150,11 @@ export default function VideoPlayer({ type, tmdbId, season, episode }: VideoPlay
             sandbox="allow-scripts allow-same-origin allow-forms allow-presentation"
           />
         )}
-        
-        {isFullscreen && (
-          <button
-            onClick={() => setIsFullscreen(false)}
-            style={{
-              position: "absolute",
-              top: "24px",
-              right: "24px",
-              background: "rgba(0,0,0,0.5)",
-              color: "white",
-              border: "1px solid rgba(255,255,255,0.2)",
-              borderRadius: "50%",
-              width: "48px",
-              height: "48px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              cursor: "pointer",
-              zIndex: 10000,
-              backdropFilter: "blur(4px)"
-            }}
-          >
-            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3v3a2 2 0 0 1-2 2H3"></path><path d="M21 8h-3a2 2 0 0 1-2-2V3"></path><path d="M3 16h3a2 2 0 0 1 2 2v3"></path><path d="M16 21v-3a2 2 0 0 1 2-2h3"></path></svg>
-          </button>
-        )}
       </div>
         
       {/* Controls Below Player */}
       <div>
-        <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", margin: "0 0 16px 0" }}>
-          <h3 style={{ margin: 0, fontSize: "18px" }}>Select Provider</h3>
-          <button
-            className="mobile-only"
-            onClick={() => setIsFullscreen(true)}
-            style={{
-              background: "transparent",
-              color: "var(--foreground)",
-              border: "1px solid var(--border)",
-              padding: "6px 16px",
-              borderRadius: "40px",
-              fontSize: "14px",
-              fontWeight: "500",
-              cursor: "pointer",
-              display: "flex",
-              alignItems: "center",
-              gap: "6px",
-              transition: "all 0.2s ease"
-            }}
-          >
-            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M8 3H5a2 2 0 0 0-2 2v3"></path><path d="M21 8V5a2 2 0 0 0-2-2h-3"></path><path d="M3 16v3a2 2 0 0 0 2 2h3"></path><path d="M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>
-            Fullscreen
-          </button>
-        </div>
+        <h3 style={{ margin: "0 0 16px 0", fontSize: "18px" }}>Select Provider</h3>
         <div style={{ display: "flex", gap: "16px", overflowX: "auto", paddingBottom: "8px" }}>
           {PROVIDERS.map((p) => (
             <button
