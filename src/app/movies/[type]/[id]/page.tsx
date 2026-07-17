@@ -16,8 +16,8 @@ export default function MovieDetailsPage() {
   const [error, setError] = useState<string | null>(null);
 
   // TV Show State
-  const [selectedSeason, setSelectedSeason] = useState<number>(1);
-  const [selectedEpisode, setSelectedEpisode] = useState<number>(1);
+  const [selectedSeason, setSelectedSeason] = useState<number>(0);
+  const [selectedEpisode, setSelectedEpisode] = useState<number>(0);
   const [seasonDetails, setSeasonDetails] = useState<any>(null);
 
   useEffect(() => {
@@ -33,10 +33,16 @@ export default function MovieDetailsPage() {
         
         setDetails(data);
         
-        // If it's a TV show, try to find the first valid season (sometimes season 0 is specials)
         if (type === "tv" && data.seasons && data.seasons.length > 0) {
-          const firstRealSeason = data.seasons.find((s: any) => s.season_number > 0) || data.seasons[0];
-          setSelectedSeason(firstRealSeason.season_number);
+          const savedProgress = localStorage.getItem(`eas_progress_${id}`);
+          if (savedProgress) {
+            const { s, e } = JSON.parse(savedProgress);
+            setSelectedSeason(s);
+            setSelectedEpisode(e);
+          } else {
+            const firstRealSeason = data.seasons.find((s: any) => s.season_number > 0) || data.seasons[0];
+            setSelectedSeason(firstRealSeason.season_number);
+          }
         }
       } catch (err: any) {
         setError(err.message);
@@ -56,8 +62,8 @@ export default function MovieDetailsPage() {
         const data = await res.json();
         if (res.ok) {
           setSeasonDetails(data);
-          // Auto-select episode 1 when changing seasons if it exists
-          if (data.episodes && data.episodes.length > 0) {
+          // Auto-select episode 1 when changing seasons if it exists and no episode is selected
+          if (data.episodes && data.episodes.length > 0 && selectedEpisode === 0) {
             setSelectedEpisode(data.episodes[0].episode_number);
           }
         }
@@ -67,6 +73,22 @@ export default function MovieDetailsPage() {
     };
     fetchSeason();
   }, [id, type, selectedSeason]);
+
+  // Save progress when it changes (and is fully loaded)
+  useEffect(() => {
+    if (type === "tv" && selectedSeason > 0 && selectedEpisode > 0) {
+      localStorage.setItem(`eas_progress_${id}`, JSON.stringify({ s: selectedSeason, e: selectedEpisode }));
+    }
+  }, [id, type, selectedSeason, selectedEpisode]);
+
+  const handleSeasonChange = (sNum: number) => {
+    setSelectedSeason(sNum);
+    setSelectedEpisode(0); // Will auto-select episode 1 via the fetchSeason effect
+  };
+
+  const handleEpisodeChange = (epNum: number) => {
+    setSelectedEpisode(epNum);
+  };
 
   if (loading) {
     return (
@@ -109,7 +131,29 @@ export default function MovieDetailsPage() {
           type={type} 
           tmdbId={id} 
           season={type === 'tv' ? selectedSeason : undefined} 
-          episode={type === 'tv' ? selectedEpisode : undefined} 
+          episode={type === 'tv' ? selectedEpisode : undefined}
+          info={
+            details ? (
+              type === 'movie' ? {
+                title: details.title || details.name,
+                overview: details.overview,
+                releaseDate: details.release_date,
+                rating: details.vote_average,
+                previewImage: details.backdrop_path ? `https://image.tmdb.org/t/p/w1280${details.backdrop_path}` : undefined
+              } : seasonDetails?.episodes?.find((ep: any) => ep.episode_number === selectedEpisode) ? (
+                (() => {
+                  const ep = seasonDetails.episodes.find((ep: any) => ep.episode_number === selectedEpisode);
+                  return {
+                    title: `S${selectedSeason} E${selectedEpisode}: ${ep.name}`,
+                    overview: ep.overview || details.overview,
+                    releaseDate: ep.air_date,
+                    rating: ep.vote_average,
+                    previewImage: ep.still_path ? `https://image.tmdb.org/t/p/w780${ep.still_path}` : (details.backdrop_path ? `https://image.tmdb.org/t/p/w1280${details.backdrop_path}` : undefined)
+                  };
+                })()
+              ) : undefined
+            ) : undefined
+          }
         />
 
         {/* Season & Episode Selector for TV Shows */}
@@ -121,7 +165,7 @@ export default function MovieDetailsPage() {
               {details.seasons.map((s: any) => (
                 <button
                   key={s.id}
-                  onClick={() => setSelectedSeason(s.season_number)}
+                  onClick={() => handleSeasonChange(s.season_number)}
                   style={{
                     background: selectedSeason === s.season_number ? "var(--primary)" : "transparent",
                     color: selectedSeason === s.season_number ? "white" : "var(--foreground)",
@@ -144,7 +188,7 @@ export default function MovieDetailsPage() {
                 {seasonDetails.episodes.map((ep: any) => (
                   <button
                     key={ep.id}
-                    onClick={() => setSelectedEpisode(ep.episode_number)}
+                    onClick={() => handleEpisodeChange(ep.episode_number)}
                     style={{
                       display: "flex",
                       alignItems: "center",
