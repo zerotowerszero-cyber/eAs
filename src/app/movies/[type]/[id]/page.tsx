@@ -19,6 +19,10 @@ export default function MovieDetailsPage() {
   const [selectedSeason, setSelectedSeason] = useState<number>(0);
   const [selectedEpisode, setSelectedEpisode] = useState<number>(0);
   const [seasonDetails, setSeasonDetails] = useState<any>(null);
+  
+  // Info Modal State
+  const [hoveredEpisode, setHoveredEpisode] = useState<number | null>(null);
+  const [selectedInfo, setSelectedInfo] = useState<any>(null);
 
   useEffect(() => {
     const fetchDetails = async () => {
@@ -132,28 +136,6 @@ export default function MovieDetailsPage() {
           tmdbId={id} 
           season={type === 'tv' ? selectedSeason : undefined} 
           episode={type === 'tv' ? selectedEpisode : undefined}
-          info={
-            details ? (
-              type === 'movie' ? {
-                title: details.title || details.name,
-                overview: details.overview,
-                releaseDate: details.release_date,
-                rating: details.vote_average,
-                previewImage: details.backdrop_path ? `https://image.tmdb.org/t/p/w1280${details.backdrop_path}` : undefined
-              } : seasonDetails?.episodes?.find((ep: any) => ep.episode_number === selectedEpisode) ? (
-                (() => {
-                  const ep = seasonDetails.episodes.find((ep: any) => ep.episode_number === selectedEpisode);
-                  return {
-                    title: `S${selectedSeason} E${selectedEpisode}: ${ep.name}`,
-                    overview: ep.overview || details.overview,
-                    releaseDate: ep.air_date,
-                    rating: ep.vote_average,
-                    previewImage: ep.still_path ? `https://image.tmdb.org/t/p/w780${ep.still_path}` : (details.backdrop_path ? `https://image.tmdb.org/t/p/w1280${details.backdrop_path}` : undefined)
-                  };
-                })()
-              ) : undefined
-            ) : undefined
-          }
         />
 
         {/* Season & Episode Selector for TV Shows */}
@@ -189,6 +171,8 @@ export default function MovieDetailsPage() {
                   <button
                     key={ep.id}
                     onClick={() => handleEpisodeChange(ep.episode_number)}
+                    onMouseEnter={() => setHoveredEpisode(ep.episode_number)}
+                    onMouseLeave={() => setHoveredEpisode(null)}
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -216,7 +200,7 @@ export default function MovieDetailsPage() {
                     }}>
                       {ep.episode_number}
                     </div>
-                    <div style={{ overflow: "hidden" }}>
+                    <div style={{ overflow: "hidden", flex: 1 }}>
                       <div style={{ fontWeight: "600", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--foreground)" }}>
                         {ep.name}
                       </div>
@@ -224,6 +208,37 @@ export default function MovieDetailsPage() {
                         {ep.runtime ? `${ep.runtime} min` : "TBA"}
                       </div>
                     </div>
+                    {hoveredEpisode === ep.episode_number && (
+                      <div
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          setSelectedInfo({
+                            title: `S${selectedSeason} E${ep.episode_number}: ${ep.name}`,
+                            overview: ep.overview || details.overview,
+                            releaseDate: ep.air_date,
+                            rating: ep.vote_average,
+                            previewImage: ep.still_path ? `https://image.tmdb.org/t/p/w780${ep.still_path}` : (details.backdrop_path ? `https://image.tmdb.org/t/p/w1280${details.backdrop_path}` : undefined)
+                          });
+                        }}
+                        style={{
+                          background: "var(--surface)",
+                          color: "var(--foreground)",
+                          border: "1px solid var(--border)",
+                          width: "32px",
+                          height: "32px",
+                          borderRadius: "50%",
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "center",
+                          cursor: "pointer",
+                          boxShadow: "var(--shadow-sm)",
+                          marginLeft: "auto",
+                          flexShrink: 0
+                        }}
+                      >
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                      </div>
+                    )}
                   </button>
                 ))}
               </div>
@@ -241,8 +256,35 @@ export default function MovieDetailsPage() {
             />
           )}
           <div style={{ flex: "1 1 400px" }}>
-            <h1 className="hero-title" style={{ fontSize: "clamp(24px, 4vw, 40px)", margin: "0 0 12px 0", textAlign: "left" }}>
+            <h1 className="hero-title" style={{ fontSize: "clamp(24px, 4vw, 40px)", margin: "0 0 12px 0", textAlign: "left", display: "flex", alignItems: "center", gap: "16px" }}>
               {details.title || details.name}
+              {type === 'movie' && (
+                <button
+                  onClick={() => setSelectedInfo({
+                    title: details.title || details.name,
+                    overview: details.overview,
+                    releaseDate: details.release_date,
+                    rating: details.vote_average,
+                    previewImage: details.backdrop_path ? `https://image.tmdb.org/t/p/w1280${details.backdrop_path}` : undefined
+                  })}
+                  style={{
+                    background: "transparent",
+                    color: "var(--foreground)",
+                    border: "1px solid var(--border)",
+                    width: "36px",
+                    height: "36px",
+                    borderRadius: "50%",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    cursor: "pointer",
+                    transition: "all 0.2s ease"
+                  }}
+                  title="More Info"
+                >
+                  <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                </button>
+              )}
             </h1>
             <div style={{ display: "flex", gap: "16px", color: "#5f6368", marginBottom: "24px", fontSize: "16px", fontWeight: "500", flexWrap: "wrap" }}>
               <span>{(details.release_date || details.first_air_date || "").split("-")[0]}</span>
@@ -264,6 +306,92 @@ export default function MovieDetailsPage() {
             </p>
           </div>
         </div>
+
+        {/* Info Modal Overlay */}
+        {selectedInfo && (
+          <div 
+            style={{
+              position: "fixed",
+              top: 0,
+              left: 0,
+              right: 0,
+              bottom: 0,
+              background: "transparent",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: 100,
+              padding: "24px"
+            }}
+            onClick={() => setSelectedInfo(null)}
+          >
+            <div 
+              style={{
+                background: "var(--surface)",
+                borderRadius: "24px",
+                width: "100%",
+                maxWidth: "600px",
+                overflow: "hidden",
+                boxShadow: "0 24px 48px rgba(0,0,0,0.5), 0 0 0 1px rgba(255,255,255,0.1)",
+                display: "flex",
+                flexDirection: "column",
+                color: "var(--foreground)",
+                maxHeight: "90vh",
+                overflowY: "auto"
+              }}
+              onClick={(e) => e.stopPropagation()}
+            >
+              {selectedInfo.previewImage && (
+                <div style={{ width: "100%", height: "240px" }}>
+                  <img 
+                    src={selectedInfo.previewImage} 
+                    alt={selectedInfo.title} 
+                    style={{ width: "100%", height: "100%", objectFit: "cover" }} 
+                  />
+                </div>
+              )}
+              
+              <div style={{ padding: "24px" }}>
+                <h2 style={{ fontSize: "28px", margin: "0 0 12px 0", fontWeight: "600", color: "var(--foreground)" }}>
+                  {selectedInfo.title}
+                </h2>
+                
+                <div style={{ display: "flex", gap: "16px", marginBottom: "16px", fontSize: "14px", fontWeight: "500", color: "#9aa0a6" }}>
+                  {selectedInfo.releaseDate && <span>{selectedInfo.releaseDate}</span>}
+                  {selectedInfo.releaseDate && selectedInfo.rating && <span>•</span>}
+                  {selectedInfo.rating && (
+                    <span style={{ display: "flex", alignItems: "center", gap: "4px" }}>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="#f29900" stroke="#f29900" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"></polygon></svg>
+                      {selectedInfo.rating.toFixed(1)}
+                    </span>
+                  )}
+                </div>
+                
+                <p style={{ fontSize: "16px", lineHeight: "1.6", color: "var(--foreground)", margin: 0 }}>
+                  {selectedInfo.overview || "No description available."}
+                </p>
+                
+                <button 
+                  onClick={() => setSelectedInfo(null)}
+                  style={{
+                    marginTop: "24px",
+                    width: "100%",
+                    padding: "12px",
+                    background: "var(--primary)",
+                    color: "white",
+                    border: "none",
+                    borderRadius: "32px",
+                    fontSize: "16px",
+                    fontWeight: "500",
+                    cursor: "pointer"
+                  }}
+                >
+                  Close
+                </button>
+              </div>
+            </div>
+          </div>
+        )}
 
       </div>
     </main>
