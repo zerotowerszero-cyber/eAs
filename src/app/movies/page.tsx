@@ -325,7 +325,7 @@ function MoviesSearchContent() {
                       background: "var(--primary)",
                       color: "white",
                       border: "none",
-                      borderRadius: "12px",
+                      borderRadius: "32px",
                       fontSize: "16px",
                       fontWeight: "500",
                       cursor: "pointer"
@@ -340,7 +340,7 @@ function MoviesSearchContent() {
                       background: "transparent",
                       color: "var(--foreground)",
                       border: "1px solid var(--border)",
-                      borderRadius: "12px",
+                      borderRadius: "32px",
                       fontSize: "16px",
                       fontWeight: "500",
                       cursor: "pointer"

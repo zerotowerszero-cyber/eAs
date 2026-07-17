@@ -286,7 +286,7 @@ export default function VideoPlayer({ type, tmdbId, season, episode, info }: Vid
                     background: "var(--primary)",
                     color: "white",
                     border: "none",
-                    borderRadius: "12px",
+                    borderRadius: "32px",
                     fontSize: "16px",
                     fontWeight: "500",
                     cursor: "pointer"
