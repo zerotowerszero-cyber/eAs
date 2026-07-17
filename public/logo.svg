@@ -1,6 +1,9 @@
 <svg version="1.2" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 2537 2666" width="2537" height="2666">
 	<style>
-		.s0 { fill: #000000 } 
+		.s0 { fill: #000000 }
+		@media (prefers-color-scheme: dark) {
+			.s0 { fill: #ffffff }
+		}
 	</style>
 	<g id="g1">
 		<g id="group-R5">
