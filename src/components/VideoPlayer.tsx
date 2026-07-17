@@ -124,7 +124,7 @@ export default function VideoPlayer({ type, tmdbId, season, episode }: VideoPlay
   };
 
   return (
-    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "16px" }}>
+    <div style={{ width: "100%", display: "flex", flexDirection: "column", gap: "32px" }}>
       {/* Video Player */}
       <div style={{ 
         width: "100%", 
@@ -152,9 +152,9 @@ export default function VideoPlayer({ type, tmdbId, season, episode }: VideoPlay
       </div>
         
       {/* Controls Below Player */}
-      <div style={{ marginTop: "32px" }}>
+      <div>
         <h3 style={{ margin: "0 0 16px 0", fontSize: "18px" }}>Select Provider</h3>
-        <div style={{ display: "flex", gap: "16px", marginBottom: "24px", overflowX: "auto", paddingBottom: "8px" }}>
+        <div style={{ display: "flex", gap: "16px", overflowX: "auto", paddingBottom: "8px" }}>
           {PROVIDERS.map((p) => (
             <button
               key={p.id}

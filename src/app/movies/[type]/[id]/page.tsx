@@ -122,9 +122,9 @@ export default function MovieDetailsPage() {
     <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       <Header />
       
-      <div style={{ flex: 1, padding: "96px 24px 32px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
+      <div style={{ flex: 1, padding: "96px 24px 32px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "32px" }}>
         
-        <div style={{ marginBottom: "24px" }}>
+        <div>
           <Link href="/movies" style={{ color: "var(--foreground)", textDecoration: "none", display: "flex", alignItems: "center", gap: "8px", fontWeight: "500", opacity: 0.7 }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             Back to Search
@@ -139,115 +139,117 @@ export default function MovieDetailsPage() {
         />
 
         {/* Season & Episode Selector for TV Shows */}
-        {type === 'tv' && details.seasons && (
-          <div style={{ marginTop: "32px" }}>
-            <h3 style={{ margin: "0 0 16px 0", fontSize: "18px" }}>Select Episode</h3>
+        {type === 'tv' && seasonDetails && (
+          <div style={{ display: "flex", flexDirection: "column", gap: "32px", width: "100%" }}>
+            <div>
+              <h3 style={{ margin: "0 0 16px 0", fontSize: "18px" }}>Select Episode</h3>
             
-            <div style={{ display: "flex", gap: "16px", marginBottom: "24px", overflowX: "auto", paddingBottom: "8px" }}>
-              {details.seasons.map((s: any) => (
-                <button
-                  key={s.id}
-                  onClick={() => handleSeasonChange(s.season_number)}
-                  style={{
-                    background: selectedSeason === s.season_number ? "var(--primary)" : "transparent",
-                    color: selectedSeason === s.season_number ? "white" : "var(--foreground)",
-                    border: `1px solid ${selectedSeason === s.season_number ? "var(--primary)" : "var(--border)"}`,
-                    padding: "8px 24px",
-                    borderRadius: "40px",
-                    cursor: "pointer",
-                    whiteSpace: "nowrap",
-                    fontWeight: "500",
-                    transition: "all 0.2s ease"
-                  }}
-                >
-                  {s.name}
-                </button>
-              ))}
-            </div>
-
-            {seasonDetails && seasonDetails.episodes && (
-              <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "12px", maxHeight: "300px", overflowY: "auto", paddingRight: "8px" }}>
-                {seasonDetails.episodes.map((ep: any) => (
+              <div style={{ display: "flex", gap: "16px", marginBottom: "24px", overflowX: "auto", paddingBottom: "8px" }}>
+                {details.seasons.map((s: any) => (
                   <button
-                    key={ep.id}
-                    onClick={() => handleEpisodeChange(ep.episode_number)}
-                    onMouseEnter={() => setHoveredEpisode(ep.episode_number)}
-                    onMouseLeave={() => setHoveredEpisode(null)}
+                    key={s.id}
+                    onClick={() => handleSeasonChange(s.season_number)}
                     style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "12px",
-                      background: selectedEpisode === ep.episode_number ? "rgba(26, 115, 232, 0.1)" : "transparent",
-                      border: `1px solid ${selectedEpisode === ep.episode_number ? "var(--primary)" : "var(--border)"}`,
-                      padding: "12px 16px",
+                      background: selectedSeason === s.season_number ? "var(--primary)" : "transparent",
+                      color: selectedSeason === s.season_number ? "white" : "var(--foreground)",
+                      border: `1px solid ${selectedSeason === s.season_number ? "var(--primary)" : "var(--border)"}`,
+                      padding: "8px 24px",
                       borderRadius: "40px",
                       cursor: "pointer",
-                      textAlign: "left",
+                      whiteSpace: "nowrap",
+                      fontWeight: "500",
                       transition: "all 0.2s ease"
                     }}
                   >
-                    <div style={{ 
-                      width: "32px", 
-                      height: "32px", 
-                      background: selectedEpisode === ep.episode_number ? "var(--primary)" : "var(--border)", 
-                      color: selectedEpisode === ep.episode_number ? "white" : "inherit",
-                      borderRadius: "50%", 
-                      display: "flex", 
-                      alignItems: "center", 
-                      justifyContent: "center",
-                      fontWeight: "600",
-                      flexShrink: 0
-                    }}>
-                      {ep.episode_number}
-                    </div>
-                    <div style={{ overflow: "hidden", flex: 1 }}>
-                      <div style={{ fontWeight: "600", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--foreground)" }}>
-                        {ep.name}
-                      </div>
-                      <div style={{ fontSize: "12px", color: "#5f6368" }}>
-                        {ep.runtime ? `${ep.runtime} min` : "TBA"}
-                      </div>
-                    </div>
-                    {hoveredEpisode === ep.episode_number && (
-                      <div
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setSelectedInfo({
-                            title: `S${selectedSeason} E${ep.episode_number}: ${ep.name}`,
-                            overview: ep.overview || details.overview,
-                            releaseDate: ep.air_date,
-                            rating: ep.vote_average,
-                            previewImage: ep.still_path ? `https://image.tmdb.org/t/p/w780${ep.still_path}` : (details.backdrop_path ? `https://image.tmdb.org/t/p/w1280${details.backdrop_path}` : undefined)
-                          });
-                        }}
-                        style={{
-                          background: "var(--surface)",
-                          color: "var(--foreground)",
-                          border: "1px solid var(--border)",
-                          width: "32px",
-                          height: "32px",
-                          borderRadius: "50%",
-                          display: "flex",
-                          alignItems: "center",
-                          justifyContent: "center",
-                          cursor: "pointer",
-                          boxShadow: "var(--shadow-sm)",
-                          marginLeft: "auto",
-                          flexShrink: 0
-                        }}
-                      >
-                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
-                      </div>
-                    )}
+                    {s.name}
                   </button>
                 ))}
               </div>
-            )}
+
+              {seasonDetails && seasonDetails.episodes && (
+                <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill, minmax(250px, 1fr))", gap: "12px", maxHeight: "300px", overflowY: "auto", paddingRight: "8px" }}>
+                  {seasonDetails.episodes.map((ep: any) => (
+                    <button
+                      key={ep.id}
+                      onClick={() => handleEpisodeChange(ep.episode_number)}
+                      onMouseEnter={() => setHoveredEpisode(ep.episode_number)}
+                      onMouseLeave={() => setHoveredEpisode(null)}
+                      style={{
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "12px",
+                        background: selectedEpisode === ep.episode_number ? "rgba(26, 115, 232, 0.1)" : "transparent",
+                        border: `1px solid ${selectedEpisode === ep.episode_number ? "var(--primary)" : "var(--border)"}`,
+                        padding: "12px 16px",
+                        borderRadius: "40px",
+                        cursor: "pointer",
+                        textAlign: "left",
+                        transition: "all 0.2s ease"
+                      }}
+                    >
+                      <div style={{ 
+                        width: "32px", 
+                        height: "32px", 
+                        background: selectedEpisode === ep.episode_number ? "var(--primary)" : "var(--border)", 
+                        color: selectedEpisode === ep.episode_number ? "white" : "inherit",
+                        borderRadius: "50%", 
+                        display: "flex", 
+                        alignItems: "center", 
+                        justifyContent: "center",
+                        fontWeight: "600",
+                        flexShrink: 0
+                      }}>
+                        {ep.episode_number}
+                      </div>
+                      <div style={{ overflow: "hidden", flex: 1 }}>
+                        <div style={{ fontWeight: "600", whiteSpace: "nowrap", overflow: "hidden", textOverflow: "ellipsis", color: "var(--foreground)" }}>
+                          {ep.name}
+                        </div>
+                        <div style={{ fontSize: "12px", color: "#5f6368" }}>
+                          {ep.runtime ? `${ep.runtime} min` : "TBA"}
+                        </div>
+                      </div>
+                      {hoveredEpisode === ep.episode_number && (
+                        <div
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setSelectedInfo({
+                              title: `S${selectedSeason} E${ep.episode_number}: ${ep.name}`,
+                              overview: ep.overview || details.overview,
+                              releaseDate: ep.air_date,
+                              rating: ep.vote_average,
+                              previewImage: ep.still_path ? `https://image.tmdb.org/t/p/w780${ep.still_path}` : (details.backdrop_path ? `https://image.tmdb.org/t/p/w1280${details.backdrop_path}` : undefined)
+                            });
+                          }}
+                          style={{
+                            background: "var(--surface)",
+                            color: "var(--foreground)",
+                            border: "1px solid var(--border)",
+                            width: "32px",
+                            height: "32px",
+                            borderRadius: "50%",
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            cursor: "pointer",
+                            boxShadow: "var(--shadow-sm)",
+                            marginLeft: "auto",
+                            flexShrink: 0
+                          }}
+                        >
+                          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="16" x2="12" y2="12"></line><line x1="12" y1="8" x2="12.01" y2="8"></line></svg>
+                        </div>
+                      )}
+                    </button>
+                  ))}
+                </div>
+              )}
+            </div>
           </div>
         )}
 
         {/* Media Details */}
-        <div style={{ marginTop: "40px", display: "flex", gap: "32px", flexWrap: "wrap" }}>
+        <div style={{ display: "flex", gap: "32px", flexWrap: "wrap" }}>
           {details.poster_path && (
             <img 
               src={`https://image.tmdb.org/t/p/w500${details.poster_path}`} 
