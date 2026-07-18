@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import Header from "@/components/Header";
 
 export default function CodePage() {
   const [code, setCode] = useState<string | null>(null);
@@ -22,45 +21,23 @@ export default function CodePage() {
   }, []);
 
   return (
-    <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
-      <Header />
-      <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", padding: "24px" }}>
+    <main style={{ minHeight: "100vh", display: "flex", alignItems: "center", justifyContent: "center", background: "var(--background)" }}>
+      {error ? (
+        <div style={{ color: "#d93025", fontFamily: "'Google Sans', sans-serif" }}>{error}</div>
+      ) : code ? (
         <div style={{
-          background: "var(--surface)",
-          padding: "48px",
-          borderRadius: "24px",
-          boxShadow: "var(--shadow-sm)",
-          border: "1px solid var(--border)",
-          textAlign: "center",
-          maxWidth: "400px",
-          width: "100%"
+          fontSize: "clamp(64px, 15vw, 120px)",
+          fontWeight: "700",
+          letterSpacing: "16px",
+          fontFamily: "'Google Sans Mono', monospace",
+          color: "var(--foreground)",
+          opacity: 0.9
         }}>
-          <h1 style={{ fontSize: "24px", marginBottom: "16px", color: "var(--foreground)" }}>Your Access Code</h1>
-          <p style={{ color: "#5f6368", marginBottom: "32px", fontSize: "16px" }}>
-            This code is unique to your device. Use it on the homepage to unlock the hidden section.
-          </p>
-          
-          {error ? (
-            <div style={{ color: "#d93025" }}>{error}</div>
-          ) : code ? (
-            <div style={{
-              fontSize: "48px",
-              fontWeight: "700",
-              letterSpacing: "8px",
-              fontFamily: "'Google Sans Mono', monospace",
-              color: "var(--primary)",
-              background: "rgba(26, 115, 232, 0.1)",
-              padding: "16px 24px",
-              borderRadius: "16px",
-              display: "inline-block"
-            }}>
-              {code}
-            </div>
-          ) : (
-            <div style={{ color: "var(--primary)" }}>Generating...</div>
-          )}
+          {code}
         </div>
-      </div>
+      ) : (
+        <div style={{ color: "var(--foreground)", opacity: 0.5, fontFamily: "'Google Sans', sans-serif" }}>...</div>
+      )}
     </main>
   );
 }
