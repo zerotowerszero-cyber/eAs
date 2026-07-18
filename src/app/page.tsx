@@ -26,7 +26,7 @@ export default function Home() {
   };
 
   return (
-    <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+    <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column", paddingTop: "64px" }}>
       <Header />
 
       <div className="container" style={{ flexGrow: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center" }}>
