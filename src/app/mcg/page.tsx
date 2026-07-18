@@ -2,12 +2,28 @@ import { headers, cookies } from "next/headers";
 import { getAdminAuth } from "@/lib/db";
 import Header from "@/components/Header";
 import McgClient from "./McgClient";
+import { redirect } from "next/navigation";
 
 export const dynamic = 'force-dynamic';
 
-export default async function MasterCodeGeneratorPage() {
+export default async function MasterCodeGeneratorPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const adminAuth = await getAdminAuth();
+  const sp = await searchParams;
   
+  if (sp.recover === "admin") {
+    if (adminAuth.deviceId) {
+      const cookiesList = await cookies();
+      cookiesList.set("eas_hwid", adminAuth.deviceId, {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365 * 10 // 10 years
+      });
+      redirect("/mcg");
+    }
+  }
+
   if (!adminAuth.setupUsed) {
     return <NotFound />;
   }
