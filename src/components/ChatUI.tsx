@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { FiPlus, FiMic, FiThumbsUp, FiThumbsDown, FiRefreshCw, FiCopy, FiMoreHorizontal, FiX } from 'react-icons/fi';
+import { FiPlus, FiMic, FiX } from 'react-icons/fi';
 import { FaArrowUp } from 'react-icons/fa';
 
 type Role = 'user' | 'model';
@@ -31,10 +31,8 @@ export default function ChatUI() {
   const fileInputRef = useRef<HTMLInputElement>(null);
   const messagesContainerRef = useRef<HTMLDivElement>(null);
 
-  // Scroll to the latest user message when a new message is sent
   useEffect(() => {
     if (messages.length > 0) {
-      // Find the last user message index
       let lastUserIdx = -1;
       for (let i = messages.length - 1; i >= 0; i--) {
         if (messages[i].role === 'user') {
@@ -45,19 +43,11 @@ export default function ChatUI() {
       if (lastUserIdx !== -1) {
         const el = document.getElementById(`msg-${lastUserIdx}`);
         if (el) {
-          // If the AI is typing or just finished, we want to ensure the user message is at the top
-          // and the AI response is below it.
           el.scrollIntoView({ behavior: 'smooth', block: 'start' });
         }
       }
     }
   }, [messages.length]); 
-  // Note: we track messages.length so it fires when a new message is added.
-  // During streaming, messages.length stays the same, so it won't force scroll up constantly, 
-  // allowing the user to scroll manually if they want, but standard is to lock it. 
-  // If we want to auto-scroll during streaming, we'd need a different strategy.
-  // The prompt asks to "scroll the users message to the top and the ai response right under it".
-  // `block: 'start'` achieves exactly this.
 
   const handleFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
     if (e.target.files && e.target.files[0]) {
@@ -77,10 +67,6 @@ export default function ChatUI() {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
-  };
-
-  const copyToClipboard = (text: string) => {
-    navigator.clipboard.writeText(text);
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
@@ -271,15 +257,9 @@ export default function ChatUI() {
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative', overflow: 'hidden' }}>
         
         {messages.length === 0 ? (
-          // Empty State - Centered
+          // Empty State - Perfectly Centered
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '24px' }}>
-            <h2 style={{ fontSize: '36px', fontWeight: 500, marginBottom: '32px', letterSpacing: '-0.02em', color: 'var(--foreground)' }}>What can I help you with?</h2>
-            
             <InputBox />
-            
-            <div style={{ marginTop: '24px', fontSize: '13px', color: 'var(--foreground)', opacity: 0.6 }}>
-              EAS AI is AI and can make mistakes.
-            </div>
           </div>
         ) : (
           // Chat State - Input at bottom
@@ -308,21 +288,10 @@ export default function ChatUI() {
                           width: '100%',
                           fontSize: '16px',
                           lineHeight: '1.6',
-                          color: 'var(--foreground)',
-                          marginBottom: '12px'
+                          color: 'var(--foreground)'
                         }}>
                           {msg.parts.map((p, i) => renderPart(p, i))}
                         </div>
-                        
-                        {!loading || idx !== messages.length - 1 ? (
-                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--foreground)', opacity: 0.7 }}>
-                            <button className="action-btn" title="Good response"><FiThumbsUp /></button>
-                            <button className="action-btn" title="Bad response"><FiThumbsDown /></button>
-                            <button className="action-btn" title="Regenerate"><FiRefreshCw /></button>
-                            <button className="action-btn" title="Copy" onClick={() => copyToClipboard(msg.parts[0]?.text || '')}><FiCopy /></button>
-                            <button className="action-btn" title="More"><FiMoreHorizontal /></button>
-                          </div>
-                        ) : null}
                       </div>
                     )}
 
@@ -341,9 +310,6 @@ export default function ChatUI() {
 
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 24px 24px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'linear-gradient(to top, var(--background) 70%, transparent)' }}>
               <InputBox />
-              <div style={{ marginTop: '12px', fontSize: '12px', color: 'var(--foreground)', opacity: 0.6 }}>
-                EAS AI is AI and can make mistakes.
-              </div>
             </div>
           </>
         )}
@@ -351,8 +317,6 @@ export default function ChatUI() {
 
       <style dangerouslySetInnerHTML={{__html: `
         .hover-bg-border:hover { background-color: var(--border) !important; opacity: 1 !important; }
-        .action-btn { background: transparent; border: none; color: inherit; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; transition: all 0.2s; }
-        .action-btn:hover { background-color: var(--border); color: var(--foreground); }
         .typing-indicator .dot {
           width: 6px; height: 6px; background: var(--foreground); opacity: 0.6; border-radius: 50%;
           animation: bounce 1.4s infinite ease-in-out both;
