@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getAuthCode, markCodeUsed } from '@/lib/db';
-import { getCurrentTOTP, sendCodeToDiscord } from '@/lib/discord';
+import { getCurrentTOTP, sendCodeToDiscord, validateTOTP } from '@/lib/discord';
 import { cookies } from "next/headers";
 
 export async function POST(req: NextRequest) {
@@ -45,8 +45,7 @@ export async function POST(req: NextRequest) {
     }
 
     // Step 2: Validate TOTP
-    const expectedTotp = getCurrentTOTP();
-    if (totp !== expectedTotp) {
+    if (!validateTOTP(totp)) {
       return NextResponse.json(
         { error: 'Invalid 2FA code' },
         { status: 401 }

@@ -12,23 +12,12 @@ export default async function MasterCodeGeneratorPage() {
     return <NotFound />;
   }
 
-  // Get IP
-  const headersList = await headers();
-  const forwardedFor = headersList.get("x-forwarded-for");
-  const realIp = headersList.get("x-real-ip");
-  let ip = "127.0.0.1";
-  if (forwardedFor) {
-    ip = forwardedFor.split(',')[0].trim();
-  } else if (realIp) {
-    ip = realIp;
-  }
-
   // Get HWID Cookie
   const cookiesList = await cookies();
   const hwidCookie = cookiesList.get("eas_hwid")?.value;
 
-  // Authorization Check: IP matches OR HWID matches
-  const isAuthorized = (adminAuth.ip === ip) || (adminAuth.deviceId && adminAuth.deviceId === hwidCookie);
+  // Authorization Check: HWID matches
+  const isAuthorized = adminAuth.deviceId && adminAuth.deviceId === hwidCookie;
 
   if (!isAuthorized) {
     return <NotFound />;

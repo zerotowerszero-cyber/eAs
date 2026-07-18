@@ -45,6 +45,26 @@ export default function LoginPage() {
     }
   };
 
+  const handleResend = async () => {
+    setLoading(true);
+    setError("");
+    try {
+      const res = await fetch("/api/auth/login", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ password }),
+      });
+      const data = await res.json();
+      if (!res.ok) throw new Error(data.error || "Failed to resend");
+      // The API will have triggered the discord bot again
+      setTotp("");
+    } catch (err: any) {
+      setError(err.message);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const isPasswordValid = password.length > 0;
   const isTotpValid = totp.length === 6;
   const isFormValid = requires2fa ? isTotpValid : isPasswordValid;
@@ -143,39 +163,61 @@ export default function LoginPage() {
 
           {error && <div style={{ color: "#d93025", textAlign: "center", fontSize: "14px", fontWeight: "500" }}>{error}</div>}
 
-          <button 
-            type="submit" 
-            disabled={loading || !isFormValid}
-            style={{ 
-              background: loading || !isFormValid ? "#dadce0" : "var(--primary)",
-              color: loading || !isFormValid ? "#5f6368" : "white",
-              border: "none",
-              borderRadius: "32px",
-              padding: "16px 48px",
-              fontSize: "18px",
-              fontWeight: "500",
-              cursor: loading || !isFormValid ? "not-allowed" : "pointer",
-              transition: "all 0.2s ease",
-              boxShadow: loading || !isFormValid ? "none" : "0 1px 6px rgba(32,33,36,.28)",
-              marginTop: "8px",
-              display: "flex",
-              justifyContent: "center"
-            }}
-            onMouseOver={(e) => {
-              if (!loading && isFormValid) {
-                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 4px 12px rgba(32,33,36,.15)";
-                e.currentTarget.style.transform = "translateY(-1px)";
-              }
-            }}
-            onMouseOut={(e) => {
-              if (!loading && isFormValid) {
-                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
-                e.currentTarget.style.transform = "translateY(0)";
-              }
-            }}
-          >
-            {loading ? "Verifying..." : requires2fa ? "Submit" : "Continue"}
-          </button>
+          <div style={{ display: "flex", gap: "8px", flexDirection: "column" }}>
+            <button 
+              type="submit" 
+              disabled={loading || !isFormValid}
+              style={{ 
+                background: loading || !isFormValid ? "#dadce0" : "var(--primary)",
+                color: loading || !isFormValid ? "#5f6368" : "white",
+                border: "none",
+                borderRadius: "32px",
+                padding: "16px 48px",
+                fontSize: "18px",
+                fontWeight: "500",
+                cursor: loading || !isFormValid ? "not-allowed" : "pointer",
+                transition: "all 0.2s ease",
+                boxShadow: loading || !isFormValid ? "none" : "0 1px 6px rgba(32,33,36,.28)",
+                marginTop: "8px",
+                display: "flex",
+                justifyContent: "center"
+              }}
+              onMouseOver={(e) => {
+                if (!loading && isFormValid) {
+                  e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 4px 12px rgba(32,33,36,.15)";
+                  e.currentTarget.style.transform = "translateY(-1px)";
+                }
+              }}
+              onMouseOut={(e) => {
+                if (!loading && isFormValid) {
+                  e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                  e.currentTarget.style.transform = "translateY(0)";
+                }
+              }}
+            >
+              {loading ? "Verifying..." : requires2fa ? "Submit" : "Continue"}
+            </button>
+
+            {requires2fa && (
+              <button
+                type="button"
+                onClick={handleResend}
+                disabled={loading}
+                style={{
+                  background: "transparent",
+                  color: "var(--primary)",
+                  border: "none",
+                  padding: "12px",
+                  fontSize: "14px",
+                  fontWeight: "500",
+                  cursor: loading ? "not-allowed" : "pointer",
+                  marginTop: "4px"
+                }}
+              >
+                Resend Code
+              </button>
+            )}
+          </div>
         </form>
       </div>
     </main>
