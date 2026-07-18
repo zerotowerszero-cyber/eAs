@@ -82,6 +82,12 @@ export interface AuthCode {
   used: boolean;
 }
 
+export interface UserAuth {
+  deviceId: string;
+  clickCode: string; // 4 digits consisting of 1, 2, 3
+  clickAuthGranted: boolean;
+}
+
 // ---------------- Admin Auth Methods ----------------
 
 export async function getAdminAuth(): Promise<AdminAuth> {
@@ -150,6 +156,48 @@ export async function markCodeUsed(code: string): Promise<void> {
       data[`code:${code}`] = JSON.stringify(authCode);
       saveLocalData(data);
     }
+  }
+}
+
+// ---------------- User Auth Methods ----------------
+
+export async function getUserAuth(deviceId: string): Promise<UserAuth> {
+  const client = await getRedisClient();
+  let strData = null;
+  if (client) {
+    strData = await client.get(`user:auth:${deviceId}`);
+  } else {
+    strData = getLocalData()[`user:auth:${deviceId}`];
+  }
+
+  if (strData) {
+    return JSON.parse(strData);
+  }
+
+  // Generate a new 4-digit code using only 1, 2, 3
+  let clickCode = "";
+  for (let i = 0; i < 4; i++) {
+    clickCode += Math.floor(Math.random() * 3) + 1; // 1, 2, or 3
+  }
+
+  const newUserAuth: UserAuth = {
+    deviceId,
+    clickCode,
+    clickAuthGranted: false
+  };
+
+  await setUserAuth(newUserAuth);
+  return newUserAuth;
+}
+
+export async function setUserAuth(auth: UserAuth): Promise<void> {
+  const client = await getRedisClient();
+  if (client) {
+    await client.set(`user:auth:${auth.deviceId}`, JSON.stringify(auth));
+  } else {
+    const data = getLocalData();
+    data[`user:auth:${auth.deviceId}`] = JSON.stringify(auth);
+    saveLocalData(data);
   }
 }
 

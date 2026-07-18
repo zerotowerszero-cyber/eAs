@@ -28,7 +28,7 @@ export default function MovieDetailsPage() {
     const fetchDetails = async () => {
       setLoading(true);
       try {
-        const res = await fetch(`/api/movies/details?type=${type}&id=${id}`);
+        const res = await fetch(`/api/49218/details?type=${type}&id=${id}`);
         const data = await res.json();
         
         if (!res.ok) {
@@ -62,7 +62,7 @@ export default function MovieDetailsPage() {
     const fetchSeason = async () => {
       if (type !== "tv" || !selectedSeason) return;
       try {
-        const res = await fetch(`/api/movies/season?id=${id}&season=${selectedSeason}`);
+        const res = await fetch(`/api/49218/season?id=${id}&season=${selectedSeason}`);
         const data = await res.json();
         if (res.ok) {
           setSeasonDetails(data);
@@ -112,7 +112,7 @@ export default function MovieDetailsPage() {
         <Header />
         <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#d93025", gap: "16px" }}>
           <div>{error || "Failed to load media"}</div>
-          <Link href="/movies" style={{ color: "var(--primary)", textDecoration: "underline" }}>Back to Search</Link>
+          <Link href="/49218" style={{ color: "var(--primary)", textDecoration: "underline" }}>Back to Search</Link>
         </div>
       </main>
     );
@@ -125,7 +125,7 @@ export default function MovieDetailsPage() {
       <div style={{ flex: 1, padding: "96px 24px 32px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "32px" }}>
         
         <div>
-          <Link href="/movies" style={{ color: "var(--foreground)", textDecoration: "none", display: "flex", alignItems: "center", gap: "8px", fontWeight: "500", opacity: 0.7 }}>
+          <Link href="/49218" style={{ color: "var(--foreground)", textDecoration: "none", display: "flex", alignItems: "center", gap: "8px", fontWeight: "500", opacity: 0.7 }}>
             <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><line x1="19" y1="12" x2="5" y2="12"></line><polyline points="12 19 5 12 12 5"></polyline></svg>
             Back to Search
           </Link>

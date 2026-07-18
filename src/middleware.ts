@@ -2,10 +2,10 @@ import { NextResponse } from 'next/server';
 import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
-  // Only protect /movies and its subpaths
-  if (request.nextUrl.pathname.startsWith('/movies')) {
+  // Only protect /49218 and its subpaths
+  if (request.nextUrl.pathname.startsWith('/49218')) {
     // Allow the login page to be accessed without a token
-    if (request.nextUrl.pathname === '/movies/login') {
+    if (request.nextUrl.pathname === '/49218/login') {
       return NextResponse.next();
     }
 
@@ -13,7 +13,7 @@ export function middleware(request: NextRequest) {
     
     // If no token exists, redirect to login
     if (!token || !token.value) {
-      return NextResponse.redirect(new URL('/movies/login', request.url));
+      return NextResponse.redirect(new URL('/49218/login', request.url));
     }
     
     // Note: The actual validation (IP checking) occurs during the login phase 
@@ -26,5 +26,5 @@ export function middleware(request: NextRequest) {
 }
 
 export const config = {
-  matcher: ['/movies/:path*'],
+  matcher: ['/49218/:path*'],
 };

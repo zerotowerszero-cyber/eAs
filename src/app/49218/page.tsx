@@ -20,7 +20,7 @@ function MoviesSearchContent() {
     setLoading(true);
     setError(null);
     try {
-      const res = await fetch('/api/movies/trending');
+      const res = await fetch('/api/49218/trending');
       const data = await res.json();
       if (!res.ok) throw new Error(data.error || "Failed to fetch trending");
       setResults(data.results || []);
@@ -42,7 +42,7 @@ function MoviesSearchContent() {
     setError(null);
     
     try {
-      const res = await fetch(`/api/movies/search?query=${encodeURIComponent(searchQuery)}`);
+      const res = await fetch(`/api/49218/search?query=${encodeURIComponent(searchQuery)}`);
       const data = await res.json();
       
       if (!res.ok) {
@@ -73,9 +73,9 @@ function MoviesSearchContent() {
   const handleSearch = (e: React.FormEvent) => {
     e.preventDefault();
     if (query.trim()) {
-      router.push(`/movies?q=${encodeURIComponent(query)}`);
+      router.push(`/49218?q=${encodeURIComponent(query)}`);
     } else {
-      router.push(`/movies`);
+      router.push(`/49218`);
     }
   };
 
@@ -159,7 +159,7 @@ function MoviesSearchContent() {
             }}>
               {results.map((item) => (
                 <Link 
-                  href={`/movies/${item.media_type}/${item.id}`} 
+                  href={`/49218/${item.media_type}/${item.id}`} 
                   key={item.id}
                   style={{ textDecoration: "none", color: "inherit", display: "flex", flexDirection: "column", transition: "transform 0.2s ease" }}
                   onMouseOver={(e) => e.currentTarget.style.transform = "scale(1.03)"}
@@ -316,7 +316,7 @@ function MoviesSearchContent() {
                 
                 <div style={{ display: "flex", gap: "12px", marginTop: "24px" }}>
                   <button 
-                    onClick={() => router.push(`/movies/${selectedInfo.media_type}/${selectedInfo.id}`)}
+                    onClick={() => router.push(`/49218/${selectedInfo.media_type}/${selectedInfo.id}`)}
                     style={{
                       flex: 1,
                       padding: "12px",
