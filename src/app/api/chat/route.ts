@@ -29,7 +29,7 @@ export async function POST(req: NextRequest) {
         const ai = new GoogleGenAI({ apiKey: apiKeys[i] });
         
         responseStream = await ai.models.generateContentStream({
-          model: 'gemini-3.5-flash',
+          model: 'gemini-2.5-flash',
           contents: messages,
           config: {
             temperature: 0.7,

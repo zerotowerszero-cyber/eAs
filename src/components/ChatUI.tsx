@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { FiPlus, FiSend } from 'react-icons/fi';
+import { FiPlus, FiSend, FiX } from 'react-icons/fi';
 
 type Role = 'user' | 'model';
 
@@ -134,7 +134,7 @@ export default function ChatUI() {
       }
     } catch (error) {
       console.error('Error fetching chat:', error);
-      setMessages(prev => [...prev, { role: 'model', parts: [{ text: 'Sorry, I encountered an error.' }] }]);
+      setMessages(prev => [...prev, { role: 'model', parts: [{ text: 'Sorry, I encountered an error. Please try again.' }] }]);
     } finally {
       setLoading(false);
     }
@@ -156,7 +156,7 @@ export default function ChatUI() {
           key={index} 
           src={`data:${part.inlineData.mimeType};base64,${part.inlineData.data}`} 
           alt="User upload" 
-          style={{ maxWidth: '100%', maxHeight: '300px', borderRadius: '8px', marginTop: '8px' }} 
+          style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', borderRadius: '4px', marginTop: '8px', border: '1px solid #333' }} 
         />
       );
     }
@@ -164,51 +164,38 @@ export default function ChatUI() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100%', fontFamily: 'Inter, Roboto, sans-serif' }}>
+    <div style={{ display: 'flex', height: '100%', fontFamily: 'var(--font-geist-sans), sans-serif', backgroundColor: '#000', color: '#fff' }}>
       
       {/* Main Chat Area */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
         
-        {/* Header */}
-        <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0, color: '#e3e3e3', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              EAS AI <span style={{ fontSize: '12px', background: '#333', padding: '2px 8px', borderRadius: '12px', color: '#a8c7fa' }}>Fast</span>
-            </h1>
-          </div>
-        </div>
-
         {/* Chat History */}
         <div style={{ flex: 1, overflowY: 'auto', padding: '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
           {messages.length === 0 ? (
             <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
               <div style={{ 
-                width: '64px', height: '64px', borderRadius: '50%', marginBottom: '24px',
-                background: 'url("https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg") center/cover'
-              }}></div>
-              <h2 style={{ fontSize: '36px', fontWeight: 500, margin: 0, background: 'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #d96570 20%, #d96570 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #d96570 56%, #131314 75%, #131314 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', lineHeight: 1.2 }}>
-                Welcome to EAS AI
-              </h2>
-              <p style={{ fontSize: '36px', color: '#444746', margin: 0, fontWeight: 500, lineHeight: 1.2 }}>How can I help you today?</p>
+                width: '48px', height: '48px', borderRadius: '4px', marginBottom: '24px',
+                background: '#fff', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                fontWeight: 'bold', fontSize: '20px'
+              }}>
+                AI
+              </div>
             </div>
           ) : (
-            <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', gap: '32px', paddingBottom: '120px', paddingTop: '24px' }}>
+            <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', gap: '32px', paddingBottom: '120px', paddingTop: '40px' }}>
               {messages.map((msg, idx) => (
                 <div key={idx} style={{ display: 'flex', gap: '16px', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0, 
-                    background: msg.role === 'user' 
-                      ? '#444' 
-                      : 'url("https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg") center/cover',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold'
+                  <div style={{ width: '32px', height: '32px', borderRadius: '4px', flexShrink: 0, 
+                    background: msg.role === 'user' ? '#333' : '#fff',
+                    color: msg.role === 'user' ? '#fff' : '#000',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px'
                   }}>
-                    {msg.role === 'user' ? 'U' : ''}
+                    {msg.role === 'user' ? 'U' : 'AI'}
                   </div>
                   <div style={{ 
-                    maxWidth: '80%', 
-                    background: msg.role === 'user' ? '#333537' : 'transparent',
-                    padding: msg.role === 'user' ? '12px 20px' : '0px',
-                    borderRadius: msg.role === 'user' ? '24px' : '0px',
-                    fontSize: '16px',
+                    maxWidth: '85%', 
+                    padding: '0px',
+                    fontSize: '15px',
                     lineHeight: '1.6',
                     color: '#e3e3e3',
                     alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start'
@@ -219,8 +206,10 @@ export default function ChatUI() {
               ))}
               {loading && messages[messages.length - 1]?.role !== 'model' && (
                 <div style={{ display: 'flex', gap: '16px' }}>
-                  <div style={{ width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0, background: 'url("https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg") center/cover' }}></div>
-                  <div className="typing-indicator" style={{ display: 'flex', alignItems: 'center', gap: '4px', height: '36px' }}>
+                  <div style={{ width: '32px', height: '32px', borderRadius: '4px', flexShrink: 0, background: '#fff', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px' }}>
+                    AI
+                  </div>
+                  <div className="typing-indicator" style={{ display: 'flex', alignItems: 'center', gap: '4px', height: '32px' }}>
                     <div className="dot"></div><div className="dot"></div><div className="dot"></div>
                   </div>
                 </div>
@@ -231,22 +220,21 @@ export default function ChatUI() {
         </div>
 
         {/* Input Area */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 24px 24px 24px', display: 'flex', justifyContent: 'center', background: 'linear-gradient(to top, #131314 80%, transparent)' }}>
+        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 24px 24px 24px', display: 'flex', justifyContent: 'center', background: 'linear-gradient(to top, #000 70%, transparent)' }}>
           <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column' }}>
             
             {filePreview && (
-              <div style={{ alignSelf: 'flex-start', marginBottom: '12px', position: 'relative' }}>
-                <img src={filePreview} alt="preview" style={{ height: '64px', borderRadius: '8px', border: '1px solid #333' }} />
+              <div style={{ alignSelf: 'flex-start', marginBottom: '12px', position: 'relative', display: 'inline-block' }}>
+                <img src={filePreview} alt="preview" style={{ height: '80px', objectFit: 'contain', borderRadius: '4px', border: '1px solid #333', background: '#111' }} />
                 <button 
                   onClick={removeFile}
-                  style={{ position: 'absolute', top: '-8px', right: '-8px', background: '#333', color: 'white', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '12px' }}
-                >×</button>
+                  style={{ position: 'absolute', top: '-8px', right: '-8px', background: '#fff', color: '#000', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '14px', boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
+                ><FiX /></button>
               </div>
             )}
 
             <form onSubmit={handleSubmit} style={{ 
-              display: 'flex', alignItems: 'center', background: '#1e1f20', borderRadius: '32px', padding: '8px 16px', width: '100%',
-              boxShadow: '0 2px 6px rgba(0,0,0,0.1)'
+              display: 'flex', alignItems: 'center', background: '#111', border: '1px solid #333', borderRadius: '8px', padding: '8px', width: '100%'
             }}>
               
               <input 
@@ -259,7 +247,7 @@ export default function ChatUI() {
               <button 
                 type="button" 
                 onClick={() => fileInputRef.current?.click()}
-                style={{ background: 'transparent', border: 'none', color: '#c4c7c5', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%' }}
+                style={{ background: 'transparent', border: 'none', color: '#888', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '4px' }}
                 className="hover-bg-333"
               >
                 <FiPlus />
@@ -269,31 +257,27 @@ export default function ChatUI() {
                 type="text" 
                 value={input}
                 onChange={e => setInput(e.target.value)}
-                placeholder="Enter a prompt here" 
-                style={{ flex: 1, background: 'transparent', border: 'none', color: '#e3e3e3', fontSize: '16px', padding: '12px', outline: 'none' }}
+                placeholder="Ask anything..." 
+                style={{ flex: 1, background: 'transparent', border: 'none', color: '#fff', fontSize: '15px', padding: '12px', outline: 'none' }}
               />
               
               <button 
                 type="submit" 
                 disabled={loading || (!input.trim() && !selectedFile)}
-                style={{ background: 'transparent', border: 'none', color: input.trim() || selectedFile ? '#a8c7fa' : '#5f6368', fontSize: '20px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%' }}
-                className={input.trim() || selectedFile ? "hover-bg-333" : ""}
+                style={{ background: input.trim() || selectedFile ? '#fff' : 'transparent', border: 'none', color: input.trim() || selectedFile ? '#000' : '#444', fontSize: '18px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '4px', transition: 'all 0.2s' }}
               >
                 <FiSend />
               </button>
             </form>
-            <div style={{ textAlign: 'center', color: '#5f6368', fontSize: '12px', marginTop: '12px' }}>
-              EAS AI may display inaccurate info, so double-check its responses.
-            </div>
           </div>
         </div>
 
       </div>
 
       <style dangerouslySetInnerHTML={{__html: `
-        .hover-bg-333:hover { background-color: #333 !important; }
+        .hover-bg-333:hover { background-color: #222 !important; color: #fff !important; }
         .typing-indicator .dot {
-          width: 6px; height: 6px; background: #c4c7c5; border-radius: 50%;
+          width: 6px; height: 6px; background: #888; border-radius: 50%;
           animation: bounce 1.4s infinite ease-in-out both;
         }
         .typing-indicator .dot:nth-child(1) { animation-delay: -0.32s; }
@@ -304,12 +288,14 @@ export default function ChatUI() {
         }
         .markdown-body { font-family: inherit; }
         .markdown-body p { margin-top: 0; margin-bottom: 16px; }
-        .markdown-body pre { background: #1e1f20; padding: 16px; border-radius: 8px; overflow-x: auto; margin-bottom: 16px; }
-        .markdown-body code { font-family: monospace; background: #1e1f20; padding: 2px 4px; border-radius: 4px; }
-        .markdown-body pre code { background: transparent; padding: 0; }
-        .markdown-body ul { margin-top: 0; margin-bottom: 16px; padding-left: 20px; }
+        .markdown-body p:last-child { margin-bottom: 0; }
+        .markdown-body pre { background: #111; padding: 16px; border-radius: 4px; overflow-x: auto; margin-bottom: 16px; border: 1px solid #333; }
+        .markdown-body code { font-family: monospace; background: #111; padding: 2px 4px; border-radius: 4px; border: 1px solid #333; }
+        .markdown-body pre code { background: transparent; padding: 0; border: none; }
+        .markdown-body ul, .markdown-body ol { margin-top: 0; margin-bottom: 16px; padding-left: 20px; }
         .markdown-body li { margin-bottom: 4px; }
-        .markdown-body strong { font-weight: 600; }
+        .markdown-body strong { font-weight: 600; color: #fff; }
+        .markdown-body a { color: #fff; text-decoration: underline; }
       `}} />
     </div>
   );
