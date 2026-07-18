@@ -3,7 +3,8 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { FiPlus, FiSend, FiX } from 'react-icons/fi';
+import { FiPlus, FiMic, FiChevronDown, FiThumbsUp, FiThumbsDown, FiRefreshCw, FiCopy, FiMoreHorizontal, FiX } from 'react-icons/fi';
+import { FaArrowUp } from 'react-icons/fa';
 
 type Role = 'user' | 'model';
 
@@ -26,6 +27,7 @@ export default function ChatUI() {
   const [loading, setLoading] = useState(false);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
+  const [selectedModel, setSelectedModel] = useState('Flash');
 
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
@@ -56,6 +58,10 @@ export default function ChatUI() {
     if (fileInputRef.current) {
       fileInputRef.current.value = '';
     }
+  };
+
+  const copyToClipboard = (text: string) => {
+    navigator.clipboard.writeText(text);
   };
 
   const handleSubmit = async (e?: React.FormEvent) => {
@@ -156,7 +162,7 @@ export default function ChatUI() {
           key={index} 
           src={`data:${part.inlineData.mimeType};base64,${part.inlineData.data}`} 
           alt="User upload" 
-          style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', borderRadius: '4px', marginTop: '8px', border: '1px solid #333' }} 
+          style={{ maxWidth: '100%', maxHeight: '400px', objectFit: 'contain', borderRadius: '16px', marginTop: '8px' }} 
         />
       );
     }
@@ -172,84 +178,132 @@ export default function ChatUI() {
         {/* Dynamic Chat / Input Layout */}
         {messages.length === 0 ? (
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '24px' }}>
-            <h2 style={{ fontSize: '32px', fontWeight: 500, marginBottom: '24px', letterSpacing: '-0.02em' }}>What can I help you with?</h2>
+            <h2 style={{ fontSize: '32px', fontWeight: 500, marginBottom: '32px', letterSpacing: '-0.02em', color: 'var(--foreground)' }}>What can I help you with?</h2>
             
-            <div style={{ width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', background: '#1e1f20', borderRadius: '24px', padding: '16px', border: '1px solid var(--border)' }}>
+              
               {filePreview && (
-                <div style={{ alignSelf: 'flex-start', marginBottom: '12px', position: 'relative', display: 'inline-block' }}>
-                  <img src={filePreview} alt="preview" style={{ height: '64px', objectFit: 'contain', borderRadius: '4px', border: '1px solid var(--border)', background: 'var(--surface)' }} />
+                <div style={{ alignSelf: 'flex-start', marginBottom: '16px', position: 'relative', display: 'inline-block' }}>
+                  <img src={filePreview} alt="preview" style={{ height: '80px', objectFit: 'contain', borderRadius: '12px' }} />
                   <button 
                     onClick={removeFile}
-                    style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--foreground)', color: 'var(--background)', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '12px', boxShadow: 'var(--shadow-sm)' }}
+                    style={{ position: 'absolute', top: '-8px', right: '-8px', background: '#333', color: '#fff', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '14px' }}
                   ><FiX /></button>
                 </div>
               )}
-              <form onSubmit={handleSubmit} style={{ 
-                display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '24px', padding: '4px 8px', width: '100%', boxShadow: 'var(--shadow-sm)'
-              }}>
-                <input 
-                  type="file" 
-                  accept="image/*" 
-                  ref={fileInputRef} 
-                  style={{ display: 'none' }} 
-                  onChange={handleFileSelect} 
-                />
-                <button 
-                  type="button" 
-                  onClick={() => fileInputRef.current?.click()}
-                  style={{ background: 'transparent', border: 'none', color: '#888', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%' }}
-                  className="hover-bg-surface"
-                >
-                  <FiPlus />
-                </button>
+
+              <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
+                
                 <input 
                   type="text" 
                   value={input}
                   onChange={e => setInput(e.target.value)}
-                  placeholder="Ask anything..." 
-                  style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--foreground)', fontSize: '15px', padding: '10px', outline: 'none' }}
+                  placeholder="Ask EAS AI" 
+                  style={{ width: '100%', background: 'transparent', border: 'none', color: '#e3e3e3', fontSize: '18px', outline: 'none', padding: '8px 0', marginBottom: '16px' }}
                 />
-                <button 
-                  type="submit" 
-                  disabled={loading || (!input.trim() && !selectedFile)}
-                  style={{ background: input.trim() || selectedFile ? 'var(--foreground)' : 'transparent', border: 'none', color: input.trim() || selectedFile ? 'var(--background)' : '#888', fontSize: '16px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', transition: 'all 0.2s' }}
-                >
-                  <FiSend />
-                </button>
+
+                <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                  
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                    <input 
+                      type="file" 
+                      accept="image/*" 
+                      ref={fileInputRef} 
+                      style={{ display: 'none' }} 
+                      onChange={handleFileSelect} 
+                    />
+                    <button 
+                      type="button" 
+                      onClick={() => fileInputRef.current?.click()}
+                      style={{ background: 'transparent', border: 'none', color: '#c4c7c5', fontSize: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%' }}
+                      className="hover-bg-surface"
+                    >
+                      <FiPlus />
+                    </button>
+                  </div>
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                    
+                    <button type="button" style={{ background: 'transparent', border: 'none', color: '#c4c7c5', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', cursor: 'pointer', padding: '8px 12px', borderRadius: '16px' }} className="hover-bg-surface">
+                      {selectedModel} <FiChevronDown />
+                    </button>
+
+                    <button type="button" style={{ background: 'transparent', border: 'none', color: '#c4c7c5', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%' }} className="hover-bg-surface">
+                      <FiMic />
+                    </button>
+
+                    <button 
+                      type="submit" 
+                      disabled={loading || (!input.trim() && !selectedFile)}
+                      style={{ 
+                        background: input.trim() || selectedFile ? '#3169f6' : '#282a2c', 
+                        border: 'none', 
+                        color: input.trim() || selectedFile ? '#fff' : '#5f6368', 
+                        fontSize: '16px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', transition: 'all 0.2s' 
+                      }}
+                    >
+                      <FaArrowUp />
+                    </button>
+
+                  </div>
+
+                </div>
               </form>
+            </div>
+            <div style={{ marginTop: '16px', fontSize: '12px', color: '#888' }}>
+              EAS AI is AI and can make mistakes.
             </div>
           </div>
         ) : (
           <>
             {/* Chat History */}
             <div style={{ flex: 1, overflowY: 'auto', padding: '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '100px', paddingTop: '32px' }}>
+              <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', gap: '32px', paddingBottom: '160px', paddingTop: '32px' }}>
                 {messages.map((msg, idx) => (
-                  <div key={idx} style={{ display: 'flex', gap: '16px', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
-                    <div style={{ width: '28px', height: '28px', borderRadius: '4px', flexShrink: 0, 
-                      background: msg.role === 'user' ? 'var(--border)' : 'var(--foreground)',
-                      color: msg.role === 'user' ? 'var(--foreground)' : 'var(--background)',
-                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '12px'
-                    }}>
-                      {msg.role === 'user' ? 'U' : 'AI'}
-                    </div>
-                    <div style={{ 
-                      maxWidth: '85%', 
-                      padding: '0px',
-                      fontSize: '15px',
-                      lineHeight: '1.6',
-                      color: 'var(--foreground)',
-                      alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start'
-                    }}>
-                      {msg.parts.map((p, i) => renderPart(p, i))}
-                    </div>
+                  <div key={idx} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start', width: '100%' }}>
+                    
+                    {msg.role === 'user' ? (
+                      <div style={{ 
+                        maxWidth: '85%', 
+                        background: '#1e1f20',
+                        padding: '12px 20px',
+                        borderRadius: '24px',
+                        fontSize: '16px',
+                        lineHeight: '1.6',
+                        color: '#e3e3e3'
+                      }}>
+                        {msg.parts.map((p, i) => renderPart(p, i))}
+                      </div>
+                    ) : (
+                      <div style={{ width: '100%' }}>
+                        <div style={{ 
+                          width: '100%',
+                          fontSize: '16px',
+                          lineHeight: '1.6',
+                          color: 'var(--foreground)',
+                          marginBottom: '12px'
+                        }}>
+                          {msg.parts.map((p, i) => renderPart(p, i))}
+                        </div>
+                        
+                        {/* Action Row for AI Message */}
+                        {!loading || idx !== messages.length - 1 ? (
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', color: '#c4c7c5' }}>
+                            <button className="action-btn" title="Good response"><FiThumbsUp /></button>
+                            <button className="action-btn" title="Bad response"><FiThumbsDown /></button>
+                            <button className="action-btn" title="Regenerate"><FiRefreshCw /></button>
+                            <button className="action-btn" title="Copy" onClick={() => copyToClipboard(msg.parts[0]?.text || '')}><FiCopy /></button>
+                            <button className="action-btn" title="More"><FiMoreHorizontal /></button>
+                          </div>
+                        ) : null}
+                      </div>
+                    )}
+
                   </div>
                 ))}
+
                 {loading && messages[messages.length - 1]?.role !== 'model' && (
-                  <div style={{ display: 'flex', gap: '16px' }}>
-                    <div style={{ width: '28px', height: '28px', borderRadius: '4px', flexShrink: 0, background: 'var(--foreground)', color: 'var(--background)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '12px' }}>
-                      AI
-                    </div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-start', width: '100%' }}>
                     <div className="typing-indicator" style={{ display: 'flex', alignItems: 'center', gap: '4px', height: '28px' }}>
                       <div className="dot"></div><div className="dot"></div><div className="dot"></div>
                     </div>
@@ -260,55 +314,80 @@ export default function ChatUI() {
             </div>
 
             {/* Bottom Input Area */}
-            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 24px', display: 'flex', justifyContent: 'center', background: 'linear-gradient(to top, var(--background) 80%, transparent)' }}>
-              <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column' }}>
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'linear-gradient(to top, var(--background) 90%, transparent)' }}>
+              
+              <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', background: '#1e1f20', borderRadius: '24px', padding: '16px', border: '1px solid var(--border)' }}>
                 
                 {filePreview && (
-                  <div style={{ alignSelf: 'flex-start', marginBottom: '8px', position: 'relative', display: 'inline-block' }}>
-                    <img src={filePreview} alt="preview" style={{ height: '56px', objectFit: 'contain', borderRadius: '4px', border: '1px solid var(--border)', background: 'var(--surface)' }} />
+                  <div style={{ alignSelf: 'flex-start', marginBottom: '16px', position: 'relative', display: 'inline-block' }}>
+                    <img src={filePreview} alt="preview" style={{ height: '80px', objectFit: 'contain', borderRadius: '12px' }} />
                     <button 
                       onClick={removeFile}
-                      style={{ position: 'absolute', top: '-6px', right: '-6px', background: 'var(--foreground)', color: 'var(--background)', border: 'none', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '12px', boxShadow: 'var(--shadow-sm)' }}
+                      style={{ position: 'absolute', top: '-8px', right: '-8px', background: '#333', color: '#fff', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '14px' }}
                     ><FiX /></button>
                   </div>
                 )}
 
-                <form onSubmit={handleSubmit} style={{ 
-                  display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '24px', padding: '4px 8px', width: '100%', boxShadow: 'var(--shadow-sm)'
-                }}>
+                <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', width: '100%' }}>
                   
-                  <input 
-                    type="file" 
-                    accept="image/*" 
-                    ref={fileInputRef} 
-                    style={{ display: 'none' }} 
-                    onChange={handleFileSelect} 
-                  />
-                  <button 
-                    type="button" 
-                    onClick={() => fileInputRef.current?.click()}
-                    style={{ background: 'transparent', border: 'none', color: '#888', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%' }}
-                    className="hover-bg-surface"
-                  >
-                    <FiPlus />
-                  </button>
-
                   <input 
                     type="text" 
                     value={input}
                     onChange={e => setInput(e.target.value)}
-                    placeholder="Ask anything..." 
-                    style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--foreground)', fontSize: '15px', padding: '10px', outline: 'none' }}
+                    placeholder="Ask EAS AI" 
+                    style={{ width: '100%', background: 'transparent', border: 'none', color: '#e3e3e3', fontSize: '16px', outline: 'none', padding: '4px 0', marginBottom: '12px' }}
                   />
-                  
-                  <button 
-                    type="submit" 
-                    disabled={loading || (!input.trim() && !selectedFile)}
-                    style={{ background: input.trim() || selectedFile ? 'var(--foreground)' : 'transparent', border: 'none', color: input.trim() || selectedFile ? 'var(--background)' : '#888', fontSize: '16px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', transition: 'all 0.2s' }}
-                  >
-                    <FiSend />
-                  </button>
+
+                  <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+                    
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+                      <input 
+                        type="file" 
+                        accept="image/*" 
+                        ref={fileInputRef} 
+                        style={{ display: 'none' }} 
+                        onChange={handleFileSelect} 
+                      />
+                      <button 
+                        type="button" 
+                        onClick={() => fileInputRef.current?.click()}
+                        style={{ background: 'transparent', border: 'none', color: '#c4c7c5', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%' }}
+                        className="hover-bg-surface"
+                      >
+                        <FiPlus />
+                      </button>
+                    </div>
+
+                    <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+                      
+                      <button type="button" style={{ background: 'transparent', border: 'none', color: '#c4c7c5', display: 'flex', alignItems: 'center', gap: '6px', fontSize: '14px', cursor: 'pointer', padding: '6px 12px', borderRadius: '16px' }} className="hover-bg-surface">
+                        {selectedModel} <FiChevronDown />
+                      </button>
+
+                      <button type="button" style={{ background: 'transparent', border: 'none', color: '#c4c7c5', fontSize: '18px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%' }} className="hover-bg-surface">
+                        <FiMic />
+                      </button>
+
+                      <button 
+                        type="submit" 
+                        disabled={loading || (!input.trim() && !selectedFile)}
+                        style={{ 
+                          background: input.trim() || selectedFile ? '#3169f6' : '#282a2c', 
+                          border: 'none', 
+                          color: input.trim() || selectedFile ? '#fff' : '#5f6368', 
+                          fontSize: '14px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%', transition: 'all 0.2s' 
+                        }}
+                      >
+                        <FaArrowUp />
+                      </button>
+
+                    </div>
+
+                  </div>
                 </form>
+              </div>
+              <div style={{ marginTop: '12px', fontSize: '12px', color: '#888' }}>
+                EAS AI is AI and can make mistakes.
               </div>
             </div>
           </>
@@ -316,9 +395,11 @@ export default function ChatUI() {
       </div>
 
       <style dangerouslySetInnerHTML={{__html: `
-        .hover-bg-surface:hover { background-color: var(--border) !important; color: var(--foreground) !important; }
+        .hover-bg-surface:hover { background-color: rgba(255,255,255,0.1) !important; color: #fff !important; }
+        .action-btn { background: transparent; border: none; color: inherit; font-size: 16px; cursor: pointer; display: flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; transition: all 0.2s; }
+        .action-btn:hover { background-color: rgba(255,255,255,0.1); color: #fff; }
         .typing-indicator .dot {
-          width: 5px; height: 5px; background: #888; border-radius: 50%;
+          width: 6px; height: 6px; background: #888; border-radius: 50%;
           animation: bounce 1.4s infinite ease-in-out both;
         }
         .typing-indicator .dot:nth-child(1) { animation-delay: -0.32s; }
@@ -330,8 +411,8 @@ export default function ChatUI() {
         .markdown-body { font-family: inherit; }
         .markdown-body p { margin-top: 0; margin-bottom: 16px; }
         .markdown-body p:last-child { margin-bottom: 0; }
-        .markdown-body pre { background: var(--surface); padding: 16px; border-radius: 4px; overflow-x: auto; margin-bottom: 16px; border: 1px solid var(--border); }
-        .markdown-body code { font-family: monospace; background: var(--surface); padding: 2px 4px; border-radius: 4px; border: 1px solid var(--border); }
+        .markdown-body pre { background: #1e1f20; padding: 16px; border-radius: 8px; overflow-x: auto; margin-bottom: 16px; border: 1px solid var(--border); }
+        .markdown-body code { font-family: monospace; background: #1e1f20; padding: 2px 4px; border-radius: 4px; border: 1px solid var(--border); }
         .markdown-body pre code { background: transparent; padding: 0; border: none; }
         .markdown-body ul, .markdown-body ol { margin-top: 0; margin-bottom: 16px; padding-left: 20px; }
         .markdown-body li { margin-bottom: 4px; }
