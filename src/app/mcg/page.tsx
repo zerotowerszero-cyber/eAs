@@ -12,29 +12,6 @@ export default async function MasterCodeGeneratorPage({ searchParams }: { search
   const headersList = await headers();
   const forwardedFor = headersList.get('x-forwarded-for');
   const currentIp = forwardedFor ? forwardedFor.split(',')[0].trim() : '127.0.0.1';
-  
-  // Secure One-Time Recovery
-  if (sp.recover === "admin") {
-    if (!adminAuth.recoveryUsed && adminAuth.ip === currentIp && adminAuth.deviceId) {
-      const cookiesList = await cookies();
-      cookiesList.set("eas_hwid", adminAuth.deviceId, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'lax',
-        path: '/',
-        maxAge: 60 * 60 * 24 * 365 * 10 // 10 years
-      });
-      
-      // Mark recovery as used
-      adminAuth.recoveryUsed = true;
-      await setAdminAuth(adminAuth);
-
-      redirect("/mcg");
-    } else {
-      // Failed recovery attempt
-      return <NotFound />;
-    }
-  }
 
   if (!adminAuth.setupUsed) {
     return <NotFound />;
