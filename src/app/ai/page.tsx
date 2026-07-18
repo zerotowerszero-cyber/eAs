@@ -2,8 +2,8 @@ import ChatUI from '@/components/ChatUI';
 import Header from '@/components/Header';
 
 export const metadata = {
-  title: 'EAS AI',
-  description: 'Chat with EAS AI',
+  title: 'eAs',
+  description: 'Chat with eAs',
 };
 
 export default function AIPage() {
