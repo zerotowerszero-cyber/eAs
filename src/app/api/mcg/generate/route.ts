@@ -22,12 +22,16 @@ export async function POST(req: NextRequest) {
       return NextResponse.json({ error: "System not set up" }, { status: 403 });
     }
 
+    // Get IP
+    const forwardedFor = req.headers.get('x-forwarded-for');
+    const currentIp = forwardedFor ? forwardedFor.split(',')[0].trim() : '127.0.0.1';
+
     // Get HWID Cookie
     const cookiesList = await cookies();
     const hwidCookie = cookiesList.get("eas_hwid")?.value;
 
-    // Authorization Check: HWID matches
-    const isAuthorized = adminAuth.deviceId && adminAuth.deviceId === hwidCookie;
+    // Authorization Check: BOTH HWID and IP must match perfectly
+    const isAuthorized = adminAuth.deviceId === hwidCookie && adminAuth.ip === currentIp;
 
     if (!isAuthorized) {
       return NextResponse.json({ error: "Unauthorized" }, { status: 401 });

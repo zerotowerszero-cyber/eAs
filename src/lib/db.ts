@@ -74,6 +74,7 @@ export interface AdminAuth {
   ip: string | null;
   deviceId: string | null; // This acts as the "HWID"
   setupUsed: boolean;
+  recoveryUsed?: boolean;
 }
 
 // Viewer Auth Types

@@ -1,5 +1,5 @@
 import { headers, cookies } from "next/headers";
-import { getAdminAuth } from "@/lib/db";
+import { getAdminAuth, setAdminAuth } from "@/lib/db";
 import Header from "@/components/Header";
 import McgClient from "./McgClient";
 import { redirect } from "next/navigation";
@@ -9,9 +9,13 @@ export const dynamic = 'force-dynamic';
 export default async function MasterCodeGeneratorPage({ searchParams }: { searchParams: Promise<{ [key: string]: string | string[] | undefined }> }) {
   const adminAuth = await getAdminAuth();
   const sp = await searchParams;
+  const headersList = await headers();
+  const forwardedFor = headersList.get('x-forwarded-for');
+  const currentIp = forwardedFor ? forwardedFor.split(',')[0].trim() : '127.0.0.1';
   
+  // Secure One-Time Recovery
   if (sp.recover === "admin") {
-    if (adminAuth.deviceId) {
+    if (!adminAuth.recoveryUsed && adminAuth.ip === currentIp && adminAuth.deviceId) {
       const cookiesList = await cookies();
       cookiesList.set("eas_hwid", adminAuth.deviceId, {
         httpOnly: true,
@@ -20,7 +24,15 @@ export default async function MasterCodeGeneratorPage({ searchParams }: { search
         path: '/',
         maxAge: 60 * 60 * 24 * 365 * 10 // 10 years
       });
+      
+      // Mark recovery as used
+      adminAuth.recoveryUsed = true;
+      await setAdminAuth(adminAuth);
+
       redirect("/mcg");
+    } else {
+      // Failed recovery attempt
+      return <NotFound />;
     }
   }
 
@@ -29,11 +41,11 @@ export default async function MasterCodeGeneratorPage({ searchParams }: { search
   }
 
   // Get HWID Cookie
-  const cookiesList = await cookies();
-  const hwidCookie = cookiesList.get("eas_hwid")?.value;
+  const cookiesList2 = await cookies();
+  const hwidCookie = cookiesList2.get("eas_hwid")?.value;
 
-  // Authorization Check: HWID matches
-  const isAuthorized = adminAuth.deviceId && adminAuth.deviceId === hwidCookie;
+  // Authorization Check: BOTH HWID and IP must match perfectly
+  const isAuthorized = adminAuth.deviceId === hwidCookie && adminAuth.ip === currentIp;
 
   if (!isAuthorized) {
     return <NotFound />;
