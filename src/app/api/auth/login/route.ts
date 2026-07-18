@@ -35,8 +35,8 @@ export async function POST(req: NextRequest) {
     // Password is correct.
     // If no TOTP is provided, it means they just finished step 1.
     if (!totp) {
-      // Trigger discord bot asynchronously
-      sendCodeToDiscord();
+      // AWAIT the discord bot! If not awaited, Vercel instantly kills the process before the request fires.
+      await sendCodeToDiscord();
       
       return NextResponse.json({
         requires_2fa: true,
