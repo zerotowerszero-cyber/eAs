@@ -3,8 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { FiPlus, FiMic, FiX } from 'react-icons/fi';
-import { FaArrowUp } from 'react-icons/fa';
+import { FiPlus, FiX, FiSend } from 'react-icons/fi';
 
 type Role = 'user' | 'model';
 
@@ -174,81 +173,18 @@ export default function ChatUI() {
     return null;
   };
 
-  const InputBox = () => {
-    const isPill = !filePreview;
-    
-    return (
-      <div style={{ 
-        width: '100%', 
-        maxWidth: '800px', 
-        display: 'flex', 
-        flexDirection: 'column', 
-        background: 'var(--surface)', 
-        borderRadius: isPill ? '50px' : '24px', 
-        padding: isPill ? '8px 16px' : '16px', 
-        border: '1px solid var(--border)',
-        boxShadow: 'var(--shadow-md)',
-        transition: 'all 0.3s ease'
-      }}>
-        {filePreview && (
-          <div style={{ alignSelf: 'flex-start', marginBottom: '16px', position: 'relative', display: 'inline-block' }}>
-            <img src={filePreview} alt="preview" style={{ height: '80px', objectFit: 'contain', borderRadius: '12px' }} />
-            <button 
-              onClick={removeFile}
-              style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--foreground)', color: 'var(--background)', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '14px', boxShadow: 'var(--shadow-sm)' }}
-            ><FiX /></button>
-          </div>
-        )}
-
-        <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', width: '100%', gap: '12px' }}>
-          
-          <input 
-            type="file" 
-            accept="image/*" 
-            ref={fileInputRef} 
-            style={{ display: 'none' }} 
-            onChange={handleFileSelect} 
-          />
-          <button 
-            type="button" 
-            onClick={() => fileInputRef.current?.click()}
-            style={{ background: 'transparent', border: 'none', color: 'var(--foreground)', opacity: 0.7, fontSize: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', flexShrink: 0 }}
-            className="hover-bg-border"
-          >
-            <FiPlus />
-          </button>
-
-          <input 
-            type="text" 
-            value={input}
-            onChange={e => setInput(e.target.value)}
-            placeholder="Ask eAs" 
-            style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--foreground)', fontSize: '16px', outline: 'none', padding: '8px 0' }}
-          />
-
-          <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-            {(!input.trim() && !selectedFile) ? (
-              <button type="button" style={{ background: 'transparent', border: 'none', color: 'var(--foreground)', opacity: 0.7, fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%' }} className="hover-bg-border">
-                <FiMic />
-              </button>
-            ) : (
-              <button 
-                type="submit" 
-                disabled={loading}
-                style={{ 
-                  background: 'var(--foreground)', 
-                  border: 'none', 
-                  color: 'var(--background)', 
-                  fontSize: '16px', cursor: !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', transition: 'all 0.2s', boxShadow: 'var(--shadow-sm)'
-                }}
-              >
-                <FaArrowUp />
-              </button>
-            )}
-          </div>
-        </form>
-      </div>
-    );
+  const isPill = !filePreview;
+  const inputStyle = {
+    width: '100%', 
+    maxWidth: '800px', 
+    display: 'flex', 
+    flexDirection: 'column' as const, 
+    background: 'var(--surface)', 
+    borderRadius: isPill ? '50px' : '24px', 
+    padding: isPill ? '8px 16px' : '16px', 
+    border: '1px solid var(--border)',
+    boxShadow: 'var(--shadow-md)',
+    transition: 'all 0.3s ease'
   };
 
   return (
@@ -259,7 +195,32 @@ export default function ChatUI() {
         {messages.length === 0 ? (
           // Empty State - Perfectly Centered
           <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '24px' }}>
-            <InputBox />
+            <div style={inputStyle}>
+              {filePreview && (
+                <div style={{ alignSelf: 'flex-start', marginBottom: '16px', position: 'relative', display: 'inline-block' }}>
+                  <img src={filePreview} alt="preview" style={{ height: '80px', objectFit: 'contain', borderRadius: '12px' }} />
+                  <button 
+                    onClick={removeFile}
+                    style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--foreground)', color: 'var(--background)', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '14px', boxShadow: 'var(--shadow-sm)' }}
+                  ><FiX /></button>
+                </div>
+              )}
+
+              <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', width: '100%', gap: '12px' }}>
+                <input type="file" accept="image/*" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileSelect} />
+                <button type="button" onClick={() => fileInputRef.current?.click()} style={{ background: 'transparent', border: 'none', color: 'var(--foreground)', opacity: 0.7, fontSize: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', flexShrink: 0 }} className="hover-bg-border">
+                  <FiPlus />
+                </button>
+
+                <input type="text" value={input} onChange={e => setInput(e.target.value)} placeholder="Ask eAs" style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--foreground)', fontSize: '16px', outline: 'none', padding: '8px 0' }} />
+
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                  <button type="submit" disabled={loading || (!input.trim() && !selectedFile)} style={{ background: (input.trim() || selectedFile) ? 'var(--foreground)' : 'transparent', border: 'none', color: (input.trim() || selectedFile) ? 'var(--background)' : 'var(--border)', fontSize: '18px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', transition: 'all 0.2s', boxShadow: (input.trim() || selectedFile) ? 'var(--shadow-sm)' : 'none' }}>
+                    <FiSend />
+                  </button>
+                </div>
+              </form>
+            </div>
           </div>
         ) : (
           // Chat State - Input at bottom
@@ -270,26 +231,12 @@ export default function ChatUI() {
                   <div key={idx} id={`msg-${idx}`} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start', width: '100%' }}>
                     
                     {msg.role === 'user' ? (
-                      <div style={{ 
-                        maxWidth: '85%', 
-                        background: 'var(--surface)',
-                        padding: '12px 20px',
-                        borderRadius: '24px',
-                        fontSize: '16px',
-                        lineHeight: '1.6',
-                        color: 'var(--foreground)',
-                        border: '1px solid var(--border)'
-                      }}>
+                      <div style={{ maxWidth: '85%', background: 'var(--surface)', padding: '12px 20px', borderRadius: '24px', fontSize: '16px', lineHeight: '1.6', color: 'var(--foreground)', border: '1px solid var(--border)' }}>
                         {msg.parts.map((p, i) => renderPart(p, i))}
                       </div>
                     ) : (
                       <div style={{ width: '100%' }}>
-                        <div style={{ 
-                          width: '100%',
-                          fontSize: '16px',
-                          lineHeight: '1.6',
-                          color: 'var(--foreground)'
-                        }}>
+                        <div style={{ width: '100%', fontSize: '16px', lineHeight: '1.6', color: 'var(--foreground)' }}>
                           {msg.parts.map((p, i) => renderPart(p, i))}
                         </div>
                       </div>
@@ -309,7 +256,32 @@ export default function ChatUI() {
             </div>
 
             <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 24px 24px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', background: 'linear-gradient(to top, var(--background) 70%, transparent)' }}>
-              <InputBox />
+              <div style={inputStyle}>
+                {filePreview && (
+                  <div style={{ alignSelf: 'flex-start', marginBottom: '16px', position: 'relative', display: 'inline-block' }}>
+                    <img src={filePreview} alt="preview" style={{ height: '80px', objectFit: 'contain', borderRadius: '12px' }} />
+                    <button 
+                      onClick={removeFile}
+                      style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--foreground)', color: 'var(--background)', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '14px', boxShadow: 'var(--shadow-sm)' }}
+                    ><FiX /></button>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} style={{ display: 'flex', alignItems: 'center', width: '100%', gap: '12px' }}>
+                  <input type="file" accept="image/*" ref={fileInputRef} style={{ display: 'none' }} onChange={handleFileSelect} />
+                  <button type="button" onClick={() => fileInputRef.current?.click()} style={{ background: 'transparent', border: 'none', color: 'var(--foreground)', opacity: 0.7, fontSize: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', flexShrink: 0 }} className="hover-bg-border">
+                    <FiPlus />
+                  </button>
+
+                  <input type="text" value={input} onChange={e => setInput(e.target.value)} placeholder="Ask eAs" style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--foreground)', fontSize: '16px', outline: 'none', padding: '8px 0' }} />
+
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                    <button type="submit" disabled={loading || (!input.trim() && !selectedFile)} style={{ background: (input.trim() || selectedFile) ? 'var(--foreground)' : 'transparent', border: 'none', color: (input.trim() || selectedFile) ? 'var(--background)' : 'var(--border)', fontSize: '18px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', transition: 'all 0.2s', boxShadow: (input.trim() || selectedFile) ? 'var(--shadow-sm)' : 'none' }}>
+                      <FiSend />
+                    </button>
+                  </div>
+                </form>
+              </div>
             </div>
           </>
         )}

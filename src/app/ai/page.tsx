@@ -8,9 +8,9 @@ export const metadata = {
 
 export default function AIPage() {
   return (
-    <main style={{ minHeight: "100vh", display: "flex", flexDirection: "column", paddingTop: "64px", backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
+    <main style={{ height: "100vh", overflow: "hidden", display: "flex", flexDirection: "column", paddingTop: "64px", backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
       <Header />
-      <div style={{ flex: 1, position: 'relative', overflow: 'hidden', display: 'flex', flexDirection: 'column' }}>
+      <div style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
         <ChatUI />
       </div>
     </main>
