@@ -176,7 +176,7 @@ export default function ChatUI() {
   const isPill = !filePreview;
   const inputStyle = {
     width: '100%', 
-    maxWidth: '800px', 
+    maxWidth: '700px', 
     display: 'flex', 
     flexDirection: 'column' as const, 
     background: 'var(--surface)', 
@@ -215,7 +215,7 @@ export default function ChatUI() {
                 <input type="text" value={input} onChange={e => setInput(e.target.value)} placeholder="Ask eAs" style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--foreground)', fontSize: '16px', outline: 'none', padding: '8px 0' }} />
 
                 <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                  <button type="submit" disabled={loading || (!input.trim() && !selectedFile)} style={{ background: (input.trim() || selectedFile) ? 'var(--foreground)' : 'transparent', border: 'none', color: (input.trim() || selectedFile) ? 'var(--background)' : 'var(--border)', fontSize: '18px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', transition: 'all 0.2s', boxShadow: (input.trim() || selectedFile) ? 'var(--shadow-sm)' : 'none' }}>
+                  <button type="submit" disabled={loading || (!input.trim() && !selectedFile)} style={{ background: 'transparent', border: 'none', color: (input.trim() || selectedFile) ? 'var(--foreground)' : 'var(--border)', fontSize: '20px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', transition: 'all 0.2s', boxShadow: 'none' }}>
                     <FiSend />
                   </button>
                 </div>
@@ -275,11 +275,11 @@ export default function ChatUI() {
 
                   <input type="text" value={input} onChange={e => setInput(e.target.value)} placeholder="Ask eAs" style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--foreground)', fontSize: '16px', outline: 'none', padding: '8px 0' }} />
 
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
-                    <button type="submit" disabled={loading || (!input.trim() && !selectedFile)} style={{ background: (input.trim() || selectedFile) ? 'var(--foreground)' : 'transparent', border: 'none', color: (input.trim() || selectedFile) ? 'var(--background)' : 'var(--border)', fontSize: '18px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', transition: 'all 0.2s', boxShadow: (input.trim() || selectedFile) ? 'var(--shadow-sm)' : 'none' }}>
-                      <FiSend />
-                    </button>
-                  </div>
+                <div style={{ display: 'flex', alignItems: 'center', gap: '8px', flexShrink: 0 }}>
+                  <button type="submit" disabled={loading || (!input.trim() && !selectedFile)} style={{ background: 'transparent', border: 'none', color: (input.trim() || selectedFile) ? 'var(--foreground)' : 'var(--border)', fontSize: '20px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '50%', transition: 'all 0.2s', boxShadow: 'none' }}>
+                    <FiSend />
+                  </button>
+                </div>
                 </form>
               </div>
             </div>

@@ -8,6 +8,7 @@ export default function Home() {
   const router = useRouter();
   const [clickCount, setClickCount] = useState(0);
   const [codeClickCount, setCodeClickCount] = useState(0);
+  const [makeClickCount, setMakeClickCount] = useState(0);
 
   const [userAuth, setUserAuth] = useState<any>(null);
   
@@ -34,6 +35,14 @@ export default function Home() {
     setCodeClickCount(newCount);
     if (newCount >= 5) {
       router.push("/notepad");
+    }
+  };
+
+  const handleMakeClick = () => {
+    const newCount = makeClickCount + 1;
+    setMakeClickCount(newCount);
+    if (newCount >= 4) {
+      router.push("/ai");
     }
   };
 
@@ -77,7 +86,7 @@ export default function Home() {
               Code
             </span> anything.
             <br />
-            Make it <span 
+            <span onClick={handleMakeClick} style={{ cursor: "text" }}>Make</span> it <span 
               onClick={handleEasClick} 
               style={{ cursor: "text" }}
             >
