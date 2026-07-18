@@ -207,11 +207,19 @@ export default function LoginPage() {
                   background: "transparent",
                   color: "var(--primary)",
                   border: "none",
-                  padding: "12px",
+                  padding: "0",
                   fontSize: "14px",
                   fontWeight: "500",
                   cursor: loading ? "not-allowed" : "pointer",
-                  marginTop: "4px"
+                  marginTop: "8px",
+                  textDecoration: "underline",
+                  opacity: loading ? 0.5 : 0.8
+                }}
+                onMouseOver={(e) => {
+                  if (!loading) e.currentTarget.style.opacity = "1";
+                }}
+                onMouseOut={(e) => {
+                  if (!loading) e.currentTarget.style.opacity = "0.8";
                 }}
               >
                 Resend Code
