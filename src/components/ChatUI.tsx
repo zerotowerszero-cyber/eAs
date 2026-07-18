@@ -3,7 +3,7 @@
 import React, { useState, useRef, useEffect } from 'react';
 import ReactMarkdown from 'react-markdown';
 import remarkGfm from 'remark-gfm';
-import { FiMenu, FiPlus, FiMessageSquare, FiSend, FiImage, FiSettings, FiHelpCircle, FiClock } from 'react-icons/fi';
+import { FiPlus, FiSend } from 'react-icons/fi';
 
 type Role = 'user' | 'model';
 
@@ -24,7 +24,6 @@ export default function ChatUI() {
   const [messages, setMessages] = useState<Message[]>([]);
   const [input, setInput] = useState('');
   const [loading, setLoading] = useState(false);
-  const [sidebarOpen, setSidebarOpen] = useState(true);
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [filePreview, setFilePreview] = useState<string | null>(null);
 
@@ -167,95 +166,15 @@ export default function ChatUI() {
   return (
     <div style={{ display: 'flex', height: '100%', fontFamily: 'Inter, Roboto, sans-serif' }}>
       
-      {/* Sidebar */}
-      <div style={{ 
-        width: sidebarOpen ? '280px' : '0px', 
-        backgroundColor: '#1e1f20', 
-        transition: 'width 0.3s ease',
-        overflow: 'hidden',
-        display: 'flex',
-        flexDirection: 'column',
-        borderRight: sidebarOpen ? '1px solid #333' : 'none',
-        flexShrink: 0
-      }}>
-        <div style={{ padding: '20px' }}>
-          <button 
-            onClick={() => setSidebarOpen(!sidebarOpen)}
-            style={{ background: 'transparent', border: 'none', color: '#e3e3e3', fontSize: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '50%' }}
-            className="hover-bg-333"
-          >
-            <FiMenu />
-          </button>
-        </div>
-
-        <div style={{ padding: '0 16px', marginTop: '10px' }}>
-          <button 
-            onClick={() => setMessages([])}
-            style={{ 
-              display: 'flex', alignItems: 'center', gap: '12px', background: '#282a2c', 
-              color: '#e3e3e3', border: 'none', borderRadius: '24px', padding: '12px 16px',
-              fontSize: '14px', fontWeight: 500, cursor: 'pointer', width: '100%',
-              transition: 'background 0.2s'
-            }}
-            className="hover-bg-333"
-          >
-            <FiPlus size={20} />
-            <span>New chat</span>
-          </button>
-        </div>
-
-        <div style={{ flex: 1, padding: '24px 16px', overflowY: 'auto' }}>
-          <div style={{ fontSize: '14px', color: '#c4c7c5', marginBottom: '16px', fontWeight: 500, paddingLeft: '12px' }}>Recent</div>
-          {/* Dummy recent chats */}
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', color: '#e3e3e3', borderRadius: '24px', cursor: 'pointer', fontSize: '14px' }} className="hover-bg-333">
-            <FiMessageSquare size={18} />
-            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Trip to Paris</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', color: '#e3e3e3', borderRadius: '24px', cursor: 'pointer', fontSize: '14px' }} className="hover-bg-333">
-            <FiMessageSquare size={18} />
-            <span style={{ whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>Learn Next.js</span>
-          </div>
-        </div>
-
-        <div style={{ padding: '16px' }}>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', color: '#e3e3e3', borderRadius: '24px', cursor: 'pointer', fontSize: '14px' }} className="hover-bg-333">
-            <FiHelpCircle size={18} />
-            <span>Help</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', color: '#e3e3e3', borderRadius: '24px', cursor: 'pointer', fontSize: '14px' }} className="hover-bg-333">
-            <FiClock size={18} />
-            <span>Activity</span>
-          </div>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px', padding: '12px', color: '#e3e3e3', borderRadius: '24px', cursor: 'pointer', fontSize: '14px' }} className="hover-bg-333">
-            <FiSettings size={18} />
-            <span>Settings</span>
-          </div>
-        </div>
-      </div>
-
       {/* Main Chat Area */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
         
         {/* Header */}
         <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '16px 24px' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            {!sidebarOpen && (
-              <button 
-                onClick={() => setSidebarOpen(true)}
-                style={{ background: 'transparent', border: 'none', color: '#e3e3e3', fontSize: '24px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '48px', height: '48px', borderRadius: '50%' }}
-                className="hover-bg-333"
-              >
-                <FiMenu />
-              </button>
-            )}
             <h1 style={{ fontSize: '22px', fontWeight: 500, margin: 0, color: '#e3e3e3', display: 'flex', alignItems: 'center', gap: '8px' }}>
-              Gemini <span style={{ fontSize: '12px', background: '#333', padding: '2px 8px', borderRadius: '12px', color: '#a8c7fa' }}>Advanced</span>
+              EAS AI <span style={{ fontSize: '12px', background: '#333', padding: '2px 8px', borderRadius: '12px', color: '#a8c7fa' }}>Fast</span>
             </h1>
-          </div>
-          <div>
-            <div style={{ width: '40px', height: '40px', borderRadius: '50%', background: 'linear-gradient(45deg, #4285f4, #ea4335)', display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold' }}>
-              A
-            </div>
           </div>
         </div>
 
@@ -268,7 +187,7 @@ export default function ChatUI() {
                 background: 'url("https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg") center/cover'
               }}></div>
               <h2 style={{ fontSize: '36px', fontWeight: 500, margin: 0, background: 'linear-gradient(74deg, #4285f4 0, #9b72cb 9%, #d96570 20%, #d96570 24%, #9b72cb 35%, #4285f4 44%, #9b72cb 50%, #d96570 56%, #131314 75%, #131314 100%)', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', lineHeight: 1.2 }}>
-                Hello, User
+                Welcome to EAS AI
               </h2>
               <p style={{ fontSize: '36px', color: '#444746', margin: 0, fontWeight: 500, lineHeight: 1.2 }}>How can I help you today?</p>
             </div>
@@ -278,11 +197,11 @@ export default function ChatUI() {
                 <div key={idx} style={{ display: 'flex', gap: '16px', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
                   <div style={{ width: '36px', height: '36px', borderRadius: '50%', flexShrink: 0, 
                     background: msg.role === 'user' 
-                      ? 'linear-gradient(45deg, #4285f4, #ea4335)' 
+                      ? '#444' 
                       : 'url("https://www.gstatic.com/lamda/images/gemini_sparkle_v002_d4735304ff6292a690345.svg") center/cover',
                     display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white', fontWeight: 'bold'
                   }}>
-                    {msg.role === 'user' ? 'A' : ''}
+                    {msg.role === 'user' ? 'U' : ''}
                   </div>
                   <div style={{ 
                     maxWidth: '80%', 
@@ -363,8 +282,8 @@ export default function ChatUI() {
                 <FiSend />
               </button>
             </form>
-            <div style={{ textAlign: 'center', color: '#c4c7c5', fontSize: '12px', marginTop: '12px' }}>
-              Gemini may display inaccurate info, including about people, so double-check its responses.
+            <div style={{ textAlign: 'center', color: '#5f6368', fontSize: '12px', marginTop: '12px' }}>
+              EAS AI may display inaccurate info, so double-check its responses.
             </div>
           </div>
         </div>
