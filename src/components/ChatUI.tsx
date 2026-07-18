@@ -164,120 +164,161 @@ export default function ChatUI() {
   };
 
   return (
-    <div style={{ display: 'flex', height: '100%', fontFamily: 'var(--font-geist-sans), sans-serif', backgroundColor: '#000', color: '#fff' }}>
+    <div style={{ display: 'flex', flexDirection: 'column', height: '100%', fontFamily: 'var(--font-geist-sans), sans-serif', backgroundColor: 'var(--background)', color: 'var(--foreground)' }}>
       
-      {/* Main Chat Area */}
+      {/* Main Container */}
       <div style={{ flex: 1, display: 'flex', flexDirection: 'column', position: 'relative' }}>
         
-        {/* Chat History */}
-        <div style={{ flex: 1, overflowY: 'auto', padding: '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-          {messages.length === 0 ? (
-            <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', textAlign: 'center' }}>
-              <div style={{ 
-                width: '48px', height: '48px', borderRadius: '4px', marginBottom: '24px',
-                background: '#fff', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center',
-                fontWeight: 'bold', fontSize: '20px'
-              }}>
-                AI
-              </div>
-            </div>
-          ) : (
-            <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', gap: '32px', paddingBottom: '120px', paddingTop: '40px' }}>
-              {messages.map((msg, idx) => (
-                <div key={idx} style={{ display: 'flex', gap: '16px', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '4px', flexShrink: 0, 
-                    background: msg.role === 'user' ? '#333' : '#fff',
-                    color: msg.role === 'user' ? '#fff' : '#000',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px'
-                  }}>
-                    {msg.role === 'user' ? 'U' : 'AI'}
-                  </div>
-                  <div style={{ 
-                    maxWidth: '85%', 
-                    padding: '0px',
-                    fontSize: '15px',
-                    lineHeight: '1.6',
-                    color: '#e3e3e3',
-                    alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start'
-                  }}>
-                    {msg.parts.map((p, i) => renderPart(p, i))}
-                  </div>
-                </div>
-              ))}
-              {loading && messages[messages.length - 1]?.role !== 'model' && (
-                <div style={{ display: 'flex', gap: '16px' }}>
-                  <div style={{ width: '32px', height: '32px', borderRadius: '4px', flexShrink: 0, background: '#fff', color: '#000', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '14px' }}>
-                    AI
-                  </div>
-                  <div className="typing-indicator" style={{ display: 'flex', alignItems: 'center', gap: '4px', height: '32px' }}>
-                    <div className="dot"></div><div className="dot"></div><div className="dot"></div>
-                  </div>
+        {/* Dynamic Chat / Input Layout */}
+        {messages.length === 0 ? (
+          <div style={{ flex: 1, display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '24px' }}>
+            <h2 style={{ fontSize: '32px', fontWeight: 500, marginBottom: '24px', letterSpacing: '-0.02em' }}>What can I help you with?</h2>
+            
+            <div style={{ width: '100%', maxWidth: '600px', display: 'flex', flexDirection: 'column' }}>
+              {filePreview && (
+                <div style={{ alignSelf: 'flex-start', marginBottom: '12px', position: 'relative', display: 'inline-block' }}>
+                  <img src={filePreview} alt="preview" style={{ height: '64px', objectFit: 'contain', borderRadius: '4px', border: '1px solid var(--border)', background: 'var(--surface)' }} />
+                  <button 
+                    onClick={removeFile}
+                    style={{ position: 'absolute', top: '-8px', right: '-8px', background: 'var(--foreground)', color: 'var(--background)', border: 'none', borderRadius: '50%', width: '20px', height: '20px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '12px', boxShadow: 'var(--shadow-sm)' }}
+                  ><FiX /></button>
                 </div>
               )}
-              <div ref={messagesEndRef} />
-            </div>
-          )}
-        </div>
-
-        {/* Input Area */}
-        <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '0 24px 24px 24px', display: 'flex', justifyContent: 'center', background: 'linear-gradient(to top, #000 70%, transparent)' }}>
-          <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column' }}>
-            
-            {filePreview && (
-              <div style={{ alignSelf: 'flex-start', marginBottom: '12px', position: 'relative', display: 'inline-block' }}>
-                <img src={filePreview} alt="preview" style={{ height: '80px', objectFit: 'contain', borderRadius: '4px', border: '1px solid #333', background: '#111' }} />
+              <form onSubmit={handleSubmit} style={{ 
+                display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '24px', padding: '4px 8px', width: '100%', boxShadow: 'var(--shadow-sm)'
+              }}>
+                <input 
+                  type="file" 
+                  accept="image/*" 
+                  ref={fileInputRef} 
+                  style={{ display: 'none' }} 
+                  onChange={handleFileSelect} 
+                />
                 <button 
-                  onClick={removeFile}
-                  style={{ position: 'absolute', top: '-8px', right: '-8px', background: '#fff', color: '#000', border: 'none', borderRadius: '50%', width: '24px', height: '24px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '14px', boxShadow: '0 2px 4px rgba(0,0,0,0.5)' }}
-                ><FiX /></button>
-              </div>
-            )}
-
-            <form onSubmit={handleSubmit} style={{ 
-              display: 'flex', alignItems: 'center', background: '#111', border: '1px solid #333', borderRadius: '8px', padding: '8px', width: '100%'
-            }}>
-              
-              <input 
-                type="file" 
-                accept="image/*" 
-                ref={fileInputRef} 
-                style={{ display: 'none' }} 
-                onChange={handleFileSelect} 
-              />
-              <button 
-                type="button" 
-                onClick={() => fileInputRef.current?.click()}
-                style={{ background: 'transparent', border: 'none', color: '#888', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '40px', height: '40px', borderRadius: '4px' }}
-                className="hover-bg-333"
-              >
-                <FiPlus />
-              </button>
-
-              <input 
-                type="text" 
-                value={input}
-                onChange={e => setInput(e.target.value)}
-                placeholder="Ask anything..." 
-                style={{ flex: 1, background: 'transparent', border: 'none', color: '#fff', fontSize: '15px', padding: '12px', outline: 'none' }}
-              />
-              
-              <button 
-                type="submit" 
-                disabled={loading || (!input.trim() && !selectedFile)}
-                style={{ background: input.trim() || selectedFile ? '#fff' : 'transparent', border: 'none', color: input.trim() || selectedFile ? '#000' : '#444', fontSize: '18px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '4px', transition: 'all 0.2s' }}
-              >
-                <FiSend />
-              </button>
-            </form>
+                  type="button" 
+                  onClick={() => fileInputRef.current?.click()}
+                  style={{ background: 'transparent', border: 'none', color: '#888', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%' }}
+                  className="hover-bg-surface"
+                >
+                  <FiPlus />
+                </button>
+                <input 
+                  type="text" 
+                  value={input}
+                  onChange={e => setInput(e.target.value)}
+                  placeholder="Ask anything..." 
+                  style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--foreground)', fontSize: '15px', padding: '10px', outline: 'none' }}
+                />
+                <button 
+                  type="submit" 
+                  disabled={loading || (!input.trim() && !selectedFile)}
+                  style={{ background: input.trim() || selectedFile ? 'var(--foreground)' : 'transparent', border: 'none', color: input.trim() || selectedFile ? 'var(--background)' : '#888', fontSize: '16px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', transition: 'all 0.2s' }}
+                >
+                  <FiSend />
+                </button>
+              </form>
+            </div>
           </div>
-        </div>
+        ) : (
+          <>
+            {/* Chat History */}
+            <div style={{ flex: 1, overflowY: 'auto', padding: '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+              <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', gap: '24px', paddingBottom: '100px', paddingTop: '32px' }}>
+                {messages.map((msg, idx) => (
+                  <div key={idx} style={{ display: 'flex', gap: '16px', flexDirection: msg.role === 'user' ? 'row-reverse' : 'row' }}>
+                    <div style={{ width: '28px', height: '28px', borderRadius: '4px', flexShrink: 0, 
+                      background: msg.role === 'user' ? 'var(--border)' : 'var(--foreground)',
+                      color: msg.role === 'user' ? 'var(--foreground)' : 'var(--background)',
+                      display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '12px'
+                    }}>
+                      {msg.role === 'user' ? 'U' : 'AI'}
+                    </div>
+                    <div style={{ 
+                      maxWidth: '85%', 
+                      padding: '0px',
+                      fontSize: '15px',
+                      lineHeight: '1.6',
+                      color: 'var(--foreground)',
+                      alignSelf: msg.role === 'user' ? 'flex-end' : 'flex-start'
+                    }}>
+                      {msg.parts.map((p, i) => renderPart(p, i))}
+                    </div>
+                  </div>
+                ))}
+                {loading && messages[messages.length - 1]?.role !== 'model' && (
+                  <div style={{ display: 'flex', gap: '16px' }}>
+                    <div style={{ width: '28px', height: '28px', borderRadius: '4px', flexShrink: 0, background: 'var(--foreground)', color: 'var(--background)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 'bold', fontSize: '12px' }}>
+                      AI
+                    </div>
+                    <div className="typing-indicator" style={{ display: 'flex', alignItems: 'center', gap: '4px', height: '28px' }}>
+                      <div className="dot"></div><div className="dot"></div><div className="dot"></div>
+                    </div>
+                  </div>
+                )}
+                <div ref={messagesEndRef} />
+              </div>
+            </div>
 
+            {/* Bottom Input Area */}
+            <div style={{ position: 'absolute', bottom: 0, left: 0, right: 0, padding: '16px 24px', display: 'flex', justifyContent: 'center', background: 'linear-gradient(to top, var(--background) 80%, transparent)' }}>
+              <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column' }}>
+                
+                {filePreview && (
+                  <div style={{ alignSelf: 'flex-start', marginBottom: '8px', position: 'relative', display: 'inline-block' }}>
+                    <img src={filePreview} alt="preview" style={{ height: '56px', objectFit: 'contain', borderRadius: '4px', border: '1px solid var(--border)', background: 'var(--surface)' }} />
+                    <button 
+                      onClick={removeFile}
+                      style={{ position: 'absolute', top: '-6px', right: '-6px', background: 'var(--foreground)', color: 'var(--background)', border: 'none', borderRadius: '50%', width: '18px', height: '18px', display: 'flex', alignItems: 'center', justifyContent: 'center', cursor: 'pointer', fontSize: '12px', boxShadow: 'var(--shadow-sm)' }}
+                    ><FiX /></button>
+                  </div>
+                )}
+
+                <form onSubmit={handleSubmit} style={{ 
+                  display: 'flex', alignItems: 'center', background: 'var(--surface)', border: '1px solid var(--border)', borderRadius: '24px', padding: '4px 8px', width: '100%', boxShadow: 'var(--shadow-sm)'
+                }}>
+                  
+                  <input 
+                    type="file" 
+                    accept="image/*" 
+                    ref={fileInputRef} 
+                    style={{ display: 'none' }} 
+                    onChange={handleFileSelect} 
+                  />
+                  <button 
+                    type="button" 
+                    onClick={() => fileInputRef.current?.click()}
+                    style={{ background: 'transparent', border: 'none', color: '#888', fontSize: '20px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '36px', height: '36px', borderRadius: '50%' }}
+                    className="hover-bg-surface"
+                  >
+                    <FiPlus />
+                  </button>
+
+                  <input 
+                    type="text" 
+                    value={input}
+                    onChange={e => setInput(e.target.value)}
+                    placeholder="Ask anything..." 
+                    style={{ flex: 1, background: 'transparent', border: 'none', color: 'var(--foreground)', fontSize: '15px', padding: '10px', outline: 'none' }}
+                  />
+                  
+                  <button 
+                    type="submit" 
+                    disabled={loading || (!input.trim() && !selectedFile)}
+                    style={{ background: input.trim() || selectedFile ? 'var(--foreground)' : 'transparent', border: 'none', color: input.trim() || selectedFile ? 'var(--background)' : '#888', fontSize: '16px', cursor: (input.trim() || selectedFile) && !loading ? 'pointer' : 'not-allowed', display: 'flex', alignItems: 'center', justifyContent: 'center', width: '32px', height: '32px', borderRadius: '50%', transition: 'all 0.2s' }}
+                  >
+                    <FiSend />
+                  </button>
+                </form>
+              </div>
+            </div>
+          </>
+        )}
       </div>
 
       <style dangerouslySetInnerHTML={{__html: `
-        .hover-bg-333:hover { background-color: #222 !important; color: #fff !important; }
+        .hover-bg-surface:hover { background-color: var(--border) !important; color: var(--foreground) !important; }
         .typing-indicator .dot {
-          width: 6px; height: 6px; background: #888; border-radius: 50%;
+          width: 5px; height: 5px; background: #888; border-radius: 50%;
           animation: bounce 1.4s infinite ease-in-out both;
         }
         .typing-indicator .dot:nth-child(1) { animation-delay: -0.32s; }
@@ -289,13 +330,13 @@ export default function ChatUI() {
         .markdown-body { font-family: inherit; }
         .markdown-body p { margin-top: 0; margin-bottom: 16px; }
         .markdown-body p:last-child { margin-bottom: 0; }
-        .markdown-body pre { background: #111; padding: 16px; border-radius: 4px; overflow-x: auto; margin-bottom: 16px; border: 1px solid #333; }
-        .markdown-body code { font-family: monospace; background: #111; padding: 2px 4px; border-radius: 4px; border: 1px solid #333; }
+        .markdown-body pre { background: var(--surface); padding: 16px; border-radius: 4px; overflow-x: auto; margin-bottom: 16px; border: 1px solid var(--border); }
+        .markdown-body code { font-family: monospace; background: var(--surface); padding: 2px 4px; border-radius: 4px; border: 1px solid var(--border); }
         .markdown-body pre code { background: transparent; padding: 0; border: none; }
         .markdown-body ul, .markdown-body ol { margin-top: 0; margin-bottom: 16px; padding-left: 20px; }
         .markdown-body li { margin-bottom: 4px; }
-        .markdown-body strong { font-weight: 600; color: #fff; }
-        .markdown-body a { color: #fff; text-decoration: underline; }
+        .markdown-body strong { font-weight: 600; color: var(--foreground); }
+        .markdown-body a { color: var(--foreground); text-decoration: underline; }
       `}} />
     </div>
   );
