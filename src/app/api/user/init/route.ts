@@ -18,9 +18,20 @@ export async function GET() {
 
   const response = NextResponse.json(userAuth);
 
-  // If new device, set the cookie
+  // If new device, set the device cookie
   if (isNewDevice) {
     response.cookies.set('eas_device_id', deviceId, {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === 'production',
+      sameSite: 'lax',
+      path: '/',
+      maxAge: 60 * 60 * 24 * 365 * 10 // 10 years
+    });
+  }
+
+  // If click auth is already granted in DB, make sure the cookie is present
+  if (userAuth.clickAuthGranted) {
+    response.cookies.set('eas_click_auth', 'true', {
       httpOnly: true,
       secure: process.env.NODE_ENV === 'production',
       sameSite: 'lax',
@@ -46,8 +57,17 @@ export async function POST(request: Request) {
 
     if (userAuth.clickCode === sequence) {
       userAuth.clickAuthGranted = true;
-      await setUserAuth(userAuth); // Assuming I need to export this from db.ts, I did.
-      return NextResponse.json({ success: true });
+      await setUserAuth(userAuth);
+      
+      const res = NextResponse.json({ success: true });
+      res.cookies.set('eas_click_auth', 'true', {
+        httpOnly: true,
+        secure: process.env.NODE_ENV === 'production',
+        sameSite: 'lax',
+        path: '/',
+        maxAge: 60 * 60 * 24 * 365 * 10 // 10 years
+      });
+      return res;
     } else {
       return NextResponse.json({ success: false, error: "Invalid sequence" }, { status: 400 });
     }

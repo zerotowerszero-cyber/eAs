@@ -4,12 +4,19 @@ import type { NextRequest } from 'next/server';
 export function middleware(request: NextRequest) {
   // Only protect /49218 and its subpaths
   if (request.nextUrl.pathname.startsWith('/49218')) {
-    // Allow the login page to be accessed without a token
+    const clickAuth = request.cookies.get('eas_click_auth');
+    
+    // If they haven't done the click sequence, kick them to home page
+    if (!clickAuth || clickAuth.value !== 'true') {
+      return NextResponse.redirect(new URL('/', request.url));
+    }
+
+    // Allow the login page to be accessed without a token (but REQUIRES clickAuth)
     if (request.nextUrl.pathname === '/49218/login') {
       return NextResponse.next();
     }
 
-    const token = request.cookies.get('eas_auth_token');
+    const token = request.cookies.get('eas_auth_token_v2');
     
     // If no token exists, redirect to login
     if (!token || !token.value) {
