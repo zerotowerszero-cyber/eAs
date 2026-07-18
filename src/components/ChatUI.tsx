@@ -176,7 +176,7 @@ export default function ChatUI() {
   const isPill = !filePreview;
   const inputStyle = {
     width: '100%', 
-    maxWidth: '700px', 
+    maxWidth: '800px', 
     display: 'flex', 
     flexDirection: 'column' as const, 
     background: 'var(--surface)', 
@@ -226,7 +226,7 @@ export default function ChatUI() {
           // Chat State - Input at bottom
           <>
             <div ref={messagesContainerRef} style={{ flex: 1, overflowY: 'auto', padding: '0 24px', display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-              <div style={{ width: '100%', maxWidth: '700px', display: 'flex', flexDirection: 'column', gap: '32px', paddingBottom: '160px', paddingTop: '32px' }}>
+              <div style={{ width: '100%', maxWidth: '800px', display: 'flex', flexDirection: 'column', gap: '32px', paddingBottom: '160px', paddingTop: '32px' }}>
                 {messages.map((msg, idx) => (
                   <div key={idx} id={`msg-${idx}`} style={{ display: 'flex', flexDirection: 'column', alignItems: msg.role === 'user' ? 'flex-end' : 'flex-start', width: '100%' }}>
                     
