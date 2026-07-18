@@ -45,6 +45,10 @@ export default function LoginPage() {
     }
   };
 
+  const isPasswordValid = password.length > 0;
+  const isTotpValid = totp.length === 6;
+  const isFormValid = requires2fa ? isTotpValid : isPasswordValid;
+
   return (
     <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       <Header />
@@ -54,76 +58,123 @@ export default function LoginPage() {
           {!requires2fa ? (
             <input
               type="password"
-              placeholder="Enter password..."
+              placeholder="Enter password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
               style={{
                 width: "100%",
-                padding: "16px",
-                borderRadius: "12px",
-                border: "1px solid var(--border)",
-                background: "var(--background)",
+                height: "64px",
+                padding: "0 32px",
+                fontSize: "18px",
+                fontWeight: "500",
+                border: "1px solid transparent",
+                borderRadius: "40px",
+                background: "var(--surface)",
                 color: "var(--foreground)",
-                fontSize: "16px",
                 outline: "none",
-                boxSizing: "border-box",
-                transition: "border-color 0.2s"
+                boxShadow: "0 1px 6px rgba(32,33,36,.28)",
+                textAlign: "center",
+                letterSpacing: password.length > 0 ? "4px" : "normal",
+                fontFamily: password.length > 0 ? "'Google Sans Mono', 'Roboto Mono', monospace" : "'Google Sans Text', 'Google Sans', sans-serif",
+                transition: "all 0.2s ease"
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                e.currentTarget.style.background = "var(--surface)";
+              }}
+              onBlur={(e) => e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)"}
+              onMouseOver={(e) => {
+                if (document.activeElement !== e.currentTarget) {
+                  e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 2px 8px rgba(32,33,36,.15)";
+                }
+              }}
+              onMouseOut={(e) => {
+                if (document.activeElement !== e.currentTarget) {
+                  e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                }
               }}
               required
             />
           ) : (
-            <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
-              <div style={{ fontSize: "14px", color: "var(--primary)", fontWeight: "500", textAlign: "center", marginBottom: "8px" }}>
-                Check Discord #code channel for your 6-digit code.
-              </div>
-              <input
-                type="text"
-                placeholder="000000"
-                value={totp}
-                onChange={(e) => setTotp(e.target.value)}
-                maxLength={6}
-                style={{
-                  width: "100%",
-                  padding: "16px",
-                  borderRadius: "12px",
-                  border: "1px solid var(--border)",
-                  background: "var(--background)",
-                  color: "var(--foreground)",
-                  fontSize: "24px",
-                  textAlign: "center",
-                  letterSpacing: "8px",
-                  fontFamily: "'Google Sans Mono', monospace",
-                  outline: "none",
-                  boxSizing: "border-box",
-                  transition: "border-color 0.2s"
-                }}
-                required
-              />
-            </div>
+            <input
+              type="text"
+              placeholder="000 000"
+              value={totp}
+              onChange={(e) => {
+                // Only allow numbers and max 6 chars, strip spaces for state
+                const val = e.target.value.replace(/[^0-9]/g, '').slice(0, 6);
+                setTotp(val);
+              }}
+              style={{
+                width: "100%",
+                height: "64px",
+                padding: "0 32px",
+                fontSize: "18px",
+                fontWeight: "500",
+                border: "1px solid transparent",
+                borderRadius: "40px",
+                background: "var(--surface)",
+                color: "var(--foreground)",
+                outline: "none",
+                boxShadow: "0 1px 6px rgba(32,33,36,.28)",
+                textAlign: "center",
+                letterSpacing: totp.length > 0 ? "4px" : "normal",
+                fontFamily: "'Google Sans Mono', 'Roboto Mono', monospace",
+                transition: "all 0.2s ease"
+              }}
+              onFocus={(e) => {
+                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                e.currentTarget.style.background = "var(--surface)";
+              }}
+              onBlur={(e) => e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)"}
+              onMouseOver={(e) => {
+                if (document.activeElement !== e.currentTarget) {
+                  e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 2px 8px rgba(32,33,36,.15)";
+                }
+              }}
+              onMouseOut={(e) => {
+                if (document.activeElement !== e.currentTarget) {
+                  e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                }
+              }}
+              required
+            />
           )}
 
           {error && <div style={{ color: "#d93025", textAlign: "center", fontSize: "14px", fontWeight: "500" }}>{error}</div>}
 
           <button 
             type="submit" 
-            className="btn-sailwhale"
-            disabled={loading || (!requires2fa && !password) || (requires2fa && totp.length !== 6)}
+            disabled={loading || !isFormValid}
             style={{ 
-              width: "100%", 
-              justifyContent: "center", 
-              opacity: loading ? 0.7 : 1,
-              marginTop: "8px",
-              padding: "16px",
+              background: loading || !isFormValid ? "#dadce0" : "var(--primary)",
+              color: loading || !isFormValid ? "#5f6368" : "white",
+              border: "none",
               borderRadius: "32px",
+              padding: "16px 48px",
               fontSize: "18px",
               fontWeight: "500",
-              background: "var(--primary)",
-              color: "white",
-              border: "none",
-              cursor: "pointer"
+              cursor: loading || !isFormValid ? "not-allowed" : "pointer",
+              transition: "all 0.2s ease",
+              boxShadow: loading || !isFormValid ? "none" : "0 1px 6px rgba(32,33,36,.28)",
+              marginTop: "8px",
+              display: "flex",
+              justifyContent: "center"
+            }}
+            onMouseOver={(e) => {
+              if (!loading && isFormValid) {
+                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 4px 12px rgba(32,33,36,.15)";
+                e.currentTarget.style.transform = "translateY(-1px)";
+              }
+            }}
+            onMouseOut={(e) => {
+              if (!loading && isFormValid) {
+                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                e.currentTarget.style.transform = "translateY(0)";
+              }
             }}
           >
-            {loading ? "Verifying..." : requires2fa ? "Complete Login" : "Continue"}
+            {loading ? "Verifying..." : requires2fa ? "Submit" : "Continue"}
           </button>
         </form>
       </div>
