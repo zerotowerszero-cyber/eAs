@@ -33,6 +33,7 @@ export async function POST(req: NextRequest) {
           contents: messages,
           config: {
             temperature: 0.7,
+            tools: [{ googleSearch: {} }]
           }
         });
         
