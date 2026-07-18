@@ -12,8 +12,8 @@ export default function Header() {
           <a href="/link-shortener" className="btn-sailwhale" style={{ background: "var(--foreground)", color: "var(--background)", border: "none" }}>
             Shortener
           </a>
-          <a href="https://sailwhale.eas.cx" className="btn-sailwhale">
-            Sailwhale
+          <a href="/ai" className="btn-sailwhale" style={{ background: "var(--foreground)", color: "var(--background)", border: "none" }}>
+            eAs AI
           </a>
         </nav>
       </div>

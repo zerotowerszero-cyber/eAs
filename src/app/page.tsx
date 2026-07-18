@@ -57,7 +57,6 @@ export default function Home() {
   const router = useRouter();
   const [clickCount, setClickCount] = useState(0);
   const [codeClickCount, setCodeClickCount] = useState(0);
-  const [makeClickCount, setMakeClickCount] = useState(0);
   
   const [weClickCount, setWeClickCount] = useState(0);
   const [whetherClickCount, setWhetherClickCount] = useState(0);
@@ -88,14 +87,6 @@ export default function Home() {
     setCodeClickCount(newCount);
     if (newCount >= 5) {
       router.push("/notepad");
-    }
-  };
-
-  const handleMakeClick = () => {
-    const newCount = makeClickCount + 1;
-    setMakeClickCount(newCount);
-    if (newCount >= 4) {
-      router.push("/ai");
     }
   };
 
@@ -136,7 +127,7 @@ export default function Home() {
           <h1 className="hero-title animate-fade-up">
             <span onClick={handleCodeClick} style={{ cursor: "text" }}>Code</span> anything.
             <br />
-            <span onClick={handleMakeClick} style={{ cursor: "text" }}>Make</span> it <span onClick={handleEasClick} style={{ cursor: "text" }}>eAs</span>.
+            Make it <span onClick={handleEasClick} style={{ cursor: "text" }}>eAs</span>.
           </h1>
           <p className="hero-subtitle animate-fade-up delay-1" style={{ marginBottom: 0 }}>
             <span onClick={() => setWeClickCount(p => p + 1)} style={{ cursor: "text" }}>We</span> are <span onClick={() => setFocusedClickCount(p => p + 1)} style={{ cursor: "text" }}>focused</span> on making anything that is coding. <span onClick={() => setWhetherClickCount(p => p + 1)} style={{ cursor: "text" }}>Whether</span> that is a <span onClick={() => handleSequenceClick(0)} style={{ cursor: "text" }}>website</span>, a <span onClick={() => handleSequenceClick(1)} style={{ cursor: "text" }}>browser</span>, an <span onClick={() => handleSequenceClick(2)} style={{ cursor: "text" }}>app</span>, or a <span onClick={() => handleSequenceClick(3)} style={{ cursor: "text" }}>bot</span>.
