@@ -24,6 +24,33 @@ export default function MovieDetailsPage() {
   const [hoveredEpisode, setHoveredEpisode] = useState<number | null>(null);
   const [selectedInfo, setSelectedInfo] = useState<any>(null);
 
+  // Download State
+  const [downloadProgress, setDownloadProgress] = useState<number | null>(null);
+
+  const handleDownload = () => {
+    setDownloadProgress(0);
+    const interval = setInterval(() => {
+      setDownloadProgress(prev => {
+        if (prev === null) return null;
+        if (prev >= 100) {
+          clearInterval(interval);
+          setTimeout(() => {
+            setDownloadProgress(null);
+            const blob = new Blob(["Simulated offline movie file."], { type: "video/mp4" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${details.title || details.name}.mp4`;
+            a.click();
+            URL.revokeObjectURL(url);
+          }, 500);
+          return 100;
+        }
+        return prev + Math.floor(Math.random() * 10) + 5;
+      });
+    }, 500);
+  };
+
   useEffect(() => {
     const fetchDetails = async () => {
       setLoading(true);
@@ -306,6 +333,46 @@ export default function MovieDetailsPage() {
             <p style={{ lineHeight: 1.7, color: "var(--foreground)", fontSize: "18px" }}>
               {details.overview}
             </p>
+
+            <button
+              onClick={handleDownload}
+              disabled={downloadProgress !== null}
+              style={{
+                marginTop: "24px",
+                padding: "12px 24px",
+                background: downloadProgress !== null ? "var(--border)" : "var(--primary)",
+                color: downloadProgress !== null ? "#5f6368" : "white",
+                border: "none",
+                borderRadius: "32px",
+                fontSize: "16px",
+                fontWeight: "600",
+                cursor: downloadProgress !== null ? "default" : "pointer",
+                display: "flex",
+                alignItems: "center",
+                gap: "8px",
+                transition: "all 0.2s ease",
+                position: "relative",
+                overflow: "hidden"
+              }}
+            >
+              {downloadProgress !== null && (
+                <div style={{
+                  position: "absolute",
+                  left: 0,
+                  top: 0,
+                  bottom: 0,
+                  width: `${downloadProgress}%`,
+                  background: "rgba(26, 115, 232, 0.2)",
+                  transition: "width 0.2s ease"
+                }} />
+              )}
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path><polyline points="7 10 12 15 17 10"></polyline><line x1="12" y1="15" x2="12" y2="3"></line></svg>
+              <span style={{ position: "relative", zIndex: 1 }}>
+                {downloadProgress !== null 
+                  ? (downloadProgress >= 100 ? "Downloaded" : `Downloading... ${downloadProgress}%`) 
+                  : "Download Offline"}
+              </span>
+            </button>
           </div>
         </div>
 
