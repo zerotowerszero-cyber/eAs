@@ -6,7 +6,9 @@ import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
 import { App as CapApp } from "@capacitor/app";
 import { Dialog } from "@capacitor/dialog";
-import { Capacitor } from "@capacitor/core";
+import { Capacitor, registerPlugin } from "@capacitor/core";
+
+const UpdatePlugin = registerPlugin('UpdatePlugin');
 
 function MoviesSearchContent() {
   const router = useRouter();
@@ -37,6 +39,9 @@ function MoviesSearchContent() {
 
         if (data.version && parseFloat(data.version) > parseFloat(currentVersion)) {
           if (Capacitor.isNativePlatform()) {
+             const ignored = localStorage.getItem('ignored_update');
+             if (ignored === data.version) return;
+
              const { value } = await Dialog.confirm({
                  title: 'Update Available',
                  message: `Rhino version ${data.version} is now available. Do you want to download the new IPA?`,
@@ -44,7 +49,14 @@ function MoviesSearchContent() {
                  cancelButtonTitle: 'Later'
              });
              if (value && data.url) {
-                 window.location.href = data.url;
+                 try {
+                     await UpdatePlugin.downloadUpdate({ url: data.url });
+                 } catch (err) {
+                     console.error("Plugin failed:", err);
+                     window.location.href = data.url; // fallback
+                 }
+             } else {
+                 localStorage.setItem('ignored_update', data.version);
              }
           }
         }
@@ -119,26 +131,32 @@ function MoviesSearchContent() {
   };
 
   return (
-    <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
+    <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column", paddingTop: "calc(env(safe-area-inset-top, 47px) + 60px)" }}>
       
+      {/* Top Bar */}
+      <div style={{
+        position: "fixed", top: 0, left: 0, right: 0,
+        paddingTop: "env(safe-area-inset-top, 47px)",
+        height: "60px", boxSizing: "content-box",
+        background: isLiquidGlass ? "rgba(128, 128, 128, 0.15)" : "var(--background)",
+        backdropFilter: isLiquidGlass ? "blur(20px)" : "none",
+        WebkitBackdropFilter: isLiquidGlass ? "blur(20px)" : "none",
+        zIndex: 1000, display: "flex", alignItems: "center", justifyContent: "center",
+        borderBottom: "1px solid rgba(128,128,128,0.2)"
+      }}>
+        <div style={{ display: "flex", alignItems: "center", gap: "10px" }}>
+           <img src="/rhino-logo.svg" alt="Rhino" className="rhino-logo" style={{ height: "32px" }} />
+           <span style={{ fontSize: "22px", fontWeight: "700", fontFamily: "inherit" }}>Rhino</span>
+        </div>
+      </div>
+
       <div style={{ flex: 1, padding: "32px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
         
-        <div style={{ textAlign: "center", marginBottom: "64px", marginTop: "8vh" }}>
+        <div style={{ textAlign: "center", marginBottom: "48px", marginTop: "2vh" }}>
           
-          <img 
-            src="/rhino-logo.svg" 
-            alt="Rhino" 
-            style={{ 
-              height: "100px", 
-              marginBottom: "32px",
-              filter: "var(--logo-filter, invert(1))" // Will invert based on theme if set, otherwise default css can handle it. Let's use simple dark mode inverted logic
-            }} 
-            className="rhino-logo"
-          />
-
           <h1 className="hero-title" style={{ 
-            fontSize: "clamp(36px, 5vw, 48px)", 
-            margin: "0 auto 32px auto", 
+            fontSize: "clamp(32px, 5vw, 42px)", 
+            margin: "0 auto 24px auto", 
           }}>
             Search Movies & Shows
           </h1>
@@ -164,11 +182,11 @@ function MoviesSearchContent() {
               style={{
                 width: "100%",
                 height: "56px",
-                padding: "0 24px 0 52px",
+                padding: "0 24px 0 40px",
                 fontSize: "16px",
-                border: "1px solid transparent",
+                border: "1px solid rgba(128,128,128,0.3)",
                 borderRadius: "28px",
-                background: isLiquidGlass ? "rgba(255, 255, 255, 0.05)" : "var(--surface)",
+                background: isLiquidGlass ? "rgba(128, 128, 128, 0.1)" : "var(--surface)",
                 color: "var(--foreground)",
                 outline: "none",
                 boxShadow: isLiquidGlass ? "none" : "0 1px 6px rgba(32,33,36,.28)",
@@ -375,12 +393,14 @@ function MoviesSearchContent() {
                     style={{
                       flex: 1,
                       padding: "12px",
-                      background: "var(--primary)",
-                      color: "white",
-                      border: "none",
+                      background: "rgba(128, 128, 128, 0.2)",
+                      backdropFilter: "blur(20px)",
+                      WebkitBackdropFilter: "blur(20px)",
+                      color: "var(--foreground)",
+                      border: "1px solid rgba(128,128,128,0.3)",
                       borderRadius: "32px",
                       fontSize: "16px",
-                      fontWeight: "500",
+                      fontWeight: "600",
                       cursor: "pointer"
                     }}
                   >
@@ -390,9 +410,11 @@ function MoviesSearchContent() {
                     onClick={() => setSelectedInfo(null)}
                     style={{
                       padding: "12px 24px",
-                      background: "transparent",
+                      background: "rgba(128, 128, 128, 0.1)",
+                      backdropFilter: "blur(20px)",
+                      WebkitBackdropFilter: "blur(20px)",
                       color: "var(--foreground)",
-                      border: "1px solid var(--border)",
+                      border: "1px solid rgba(128,128,128,0.2)",
                       borderRadius: "32px",
                       fontSize: "16px",
                       fontWeight: "500",
@@ -425,7 +447,14 @@ function MoviesSearchContent() {
         .liquid-input {
           backdrop-filter: blur(20px);
           -webkit-backdrop-filter: blur(20px);
-          border: 1px solid rgba(255,255,255,0.1) !important;
+        }
+        
+        html, body {
+          width: 100%;
+          height: 100%;
+          position: fixed;
+          overflow-y: auto;
+          -webkit-overflow-scrolling: touch;
         }
       `}} />
     </main>
