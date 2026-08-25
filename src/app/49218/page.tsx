@@ -4,6 +4,9 @@ import { useState, useEffect } from "react";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
+import { App as CapApp } from "@capacitor/app";
+import { Dialog } from "@capacitor/dialog";
+import { Capacitor } from "@capacitor/core";
 
 function MoviesSearchContent() {
   const router = useRouter();
@@ -21,15 +24,29 @@ function MoviesSearchContent() {
   const [isLiquidGlass, setIsLiquidGlass] = useState(true); // Enabled unconditionally for maximum aesthetic
 
   useEffect(() => {
-    // OTA Update Check
     const checkUpdate = async () => {
       try {
         const res = await fetch('/version.json?t=' + Date.now());
         const data = await res.json();
-        const CURRENT_VERSION = "1.0"; // Hardcoded current version
-        if (data.version && data.version > CURRENT_VERSION) {
-          setUpdateAvailable(data.version);
-          setUpdateUrl(data.url);
+        
+        let currentVersion = "1.0";
+        if (Capacitor.isNativePlatform()) {
+            const info = await CapApp.getInfo();
+            currentVersion = info.version;
+        }
+
+        if (data.version && data.version > currentVersion) {
+          if (Capacitor.isNativePlatform()) {
+             const { value } = await Dialog.confirm({
+                 title: 'Update Available',
+                 message: `Rhino version ${data.version} is now available. Do you want to download the new IPA?`,
+                 okButtonTitle: 'Update',
+                 cancelButtonTitle: 'Later'
+             });
+             if (value && data.url) {
+                 window.location.href = data.url;
+             }
+          }
         }
       } catch (e) {
         console.log("No update found or offline");
@@ -391,42 +408,8 @@ function MoviesSearchContent() {
         )}
       </div>
       
-      {/* OTA Update Popup */}
-      {updateAvailable && (
-        <div style={{
-          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
-          background: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)",
-          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999
-        }}>
-          <div style={{
-            background: "var(--surface)", borderRadius: "14px", width: "270px",
-            textAlign: "center", overflow: "hidden", display: "flex", flexDirection: "column"
-          }}>
-            <div style={{ padding: "20px 16px 16px 16px" }}>
-              <div style={{ fontWeight: "600", fontSize: "17px", marginBottom: "4px" }}>Update Available</div>
-              <div style={{ fontSize: "13px", color: "#5f6368" }}>Rhino version {updateAvailable} is now available. Do you want to download the new IPA?</div>
-            </div>
-            <div style={{ display: "flex", borderTop: "1px solid var(--border)" }}>
-              <button 
-                onClick={() => setUpdateAvailable(null)}
-                style={{ flex: 1, padding: "12px", background: "none", border: "none", borderRight: "1px solid var(--border)", color: "var(--primary)", fontSize: "17px", cursor: "pointer" }}
-              >
-                Later
-              </button>
-              <button 
-                onClick={() => {
-                  if (updateUrl) window.location.href = updateUrl;
-                  setUpdateAvailable(null);
-                }}
-                style={{ flex: 1, padding: "12px", background: "none", border: "none", color: "var(--primary)", fontSize: "17px", fontWeight: "600", cursor: "pointer" }}
-              >
-                Update
-              </button>
-            </div>
-          </div>
-        </div>
-      )}
-
+      {/* OTA Update Popup removed - Using Native Dialog instead */}
+      
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes spin {
           100% { transform: rotate(360deg); }
