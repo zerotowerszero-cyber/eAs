@@ -35,7 +35,7 @@ function MoviesSearchContent() {
             currentVersion = info.version;
         }
 
-        if (data.version && data.version > currentVersion) {
+        if (data.version && parseFloat(data.version) > parseFloat(currentVersion)) {
           if (Capacitor.isNativePlatform()) {
              const { value } = await Dialog.confirm({
                  title: 'Update Available',
