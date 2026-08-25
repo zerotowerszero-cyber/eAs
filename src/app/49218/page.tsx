@@ -8,7 +8,10 @@ import { App as CapApp } from "@capacitor/app";
 import { Dialog } from "@capacitor/dialog";
 import { Capacitor, registerPlugin } from "@capacitor/core";
 
-const UpdatePlugin = registerPlugin('UpdatePlugin');
+export interface UpdatePluginPlugin {
+  downloadUpdate(options: { url: string }): Promise<void>;
+}
+const UpdatePlugin = registerPlugin<UpdatePluginPlugin>('UpdatePlugin');
 
 function MoviesSearchContent() {
   const router = useRouter();
