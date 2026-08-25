@@ -18,14 +18,9 @@ function MoviesSearchContent() {
   // OTA Update State
   const [updateAvailable, setUpdateAvailable] = useState<string | null>(null);
   const [updateUrl, setUpdateUrl] = useState<string | null>(null);
-  const [isLiquidGlass, setIsLiquidGlass] = useState(false);
+  const [isLiquidGlass, setIsLiquidGlass] = useState(true); // Enabled unconditionally for maximum aesthetic
 
   useEffect(() => {
-    // Check for iOS 26+ liquid glass support
-    if (navigator.userAgent.includes("OS 26_") || navigator.userAgent.includes("OS 27_")) {
-      setIsLiquidGlass(true);
-    }
-
     // OTA Update Check
     const checkUpdate = async () => {
       try {

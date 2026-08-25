@@ -138,7 +138,7 @@ export default function MovieDetailsPage() {
     <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
       
       
-      <div style={{ flex: 1, padding: "32px 24px 32px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "32px" }}>
+      <div style={{ flex: 1, padding: "calc(env(safe-area-inset-top) + 64px) 24px 32px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "32px" }}>
         
         <div>
           <Link href="/49218" style={{ color: "var(--foreground)", textDecoration: "none", display: "flex", alignItems: "center", gap: "8px", fontWeight: "500", opacity: 0.7 }}>
