@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Header from "@/components/Header";
 import VideoPlayer from "@/components/VideoPlayer";
 import Link from "next/link";
 import { useParams } from "next/navigation";
@@ -34,17 +33,7 @@ export default function MovieDetailsPage() {
         if (prev === null) return null;
         if (prev >= 100) {
           clearInterval(interval);
-          setTimeout(() => {
-            setDownloadProgress(null);
-            const blob = new Blob(["Simulated offline movie file."], { type: "video/mp4" });
-            const url = URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = `${details.title || details.name}.mp4`;
-            a.click();
-            URL.revokeObjectURL(url);
-          }, 500);
-          return 100;
+          return 100; // Leave it at 100 to show "Downloaded" state permanently
         }
         return prev + Math.floor(Math.random() * 10) + 5;
       });
@@ -124,7 +113,7 @@ export default function MovieDetailsPage() {
   if (loading) {
     return (
       <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
-        <Header />
+        
         <div style={{ flex: 1, display: "flex", alignItems: "center", justifyContent: "center", color: "var(--primary)" }}>
            <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ animation: "spin 1s linear infinite" }}><line x1="12" y1="2" x2="12" y2="6"></line><line x1="12" y1="18" x2="12" y2="22"></line><line x1="4.93" y1="4.93" x2="7.76" y2="7.76"></line><line x1="16.24" y1="16.24" x2="19.07" y2="19.07"></line><line x1="2" y1="12" x2="6" y2="12"></line><line x1="18" y1="12" x2="22" y2="12"></line><line x1="4.93" y1="19.07" x2="7.76" y2="16.24"></line><line x1="16.24" y1="7.76" x2="19.07" y2="4.93"></line></svg>
         </div>
@@ -136,7 +125,7 @@ export default function MovieDetailsPage() {
   if (error || !details) {
     return (
       <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
-        <Header />
+        
         <div style={{ flex: 1, display: "flex", flexDirection: "column", alignItems: "center", justifyContent: "center", color: "#d93025", gap: "16px" }}>
           <div>{error || "Failed to load media"}</div>
           <Link href="/49218" style={{ color: "var(--primary)", textDecoration: "underline" }}>Back to Search</Link>
@@ -147,9 +136,9 @@ export default function MovieDetailsPage() {
 
   return (
     <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
-      <Header />
       
-      <div style={{ flex: 1, padding: "96px 24px 32px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "32px" }}>
+      
+      <div style={{ flex: 1, padding: "32px 24px 32px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%", boxSizing: "border-box", display: "flex", flexDirection: "column", gap: "32px" }}>
         
         <div>
           <Link href="/49218" style={{ color: "var(--foreground)", textDecoration: "none", display: "flex", alignItems: "center", gap: "8px", fontWeight: "500", opacity: 0.7 }}>
@@ -341,7 +330,7 @@ export default function MovieDetailsPage() {
                 marginTop: "24px",
                 padding: "12px 24px",
                 background: downloadProgress !== null ? "var(--border)" : "var(--primary)",
-                color: downloadProgress !== null ? "#5f6368" : "white",
+                color: downloadProgress !== null ? "var(--foreground)" : "white",
                 border: "none",
                 borderRadius: "32px",
                 fontSize: "16px",

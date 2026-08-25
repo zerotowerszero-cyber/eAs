@@ -1,7 +1,6 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Header from "@/components/Header";
 import Link from "next/link";
 import { useSearchParams, useRouter } from "next/navigation";
 import { Suspense } from "react";
@@ -15,6 +14,34 @@ function MoviesSearchContent() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const [selectedInfo, setSelectedInfo] = useState<any>(null);
+
+  // OTA Update State
+  const [updateAvailable, setUpdateAvailable] = useState<string | null>(null);
+  const [updateUrl, setUpdateUrl] = useState<string | null>(null);
+  const [isLiquidGlass, setIsLiquidGlass] = useState(false);
+
+  useEffect(() => {
+    // Check for iOS 26+ liquid glass support
+    if (navigator.userAgent.includes("OS 26_") || navigator.userAgent.includes("OS 27_")) {
+      setIsLiquidGlass(true);
+    }
+
+    // OTA Update Check
+    const checkUpdate = async () => {
+      try {
+        const res = await fetch('/version.json?t=' + Date.now());
+        const data = await res.json();
+        const CURRENT_VERSION = "1.0"; // Hardcoded current version
+        if (data.version && data.version > CURRENT_VERSION) {
+          setUpdateAvailable(data.version);
+          setUpdateUrl(data.url);
+        }
+      } catch (e) {
+        console.log("No update found or offline");
+      }
+    };
+    checkUpdate();
+  }, []);
 
   const fetchTrending = async () => {
     setLoading(true);
@@ -81,11 +108,22 @@ function MoviesSearchContent() {
 
   return (
     <main style={{ minHeight: "100dvh", display: "flex", flexDirection: "column" }}>
-      <Header />
       
       <div style={{ flex: 1, padding: "32px 24px", maxWidth: "1200px", margin: "0 auto", width: "100%", boxSizing: "border-box" }}>
         
         <div style={{ textAlign: "center", marginBottom: "64px", marginTop: "8vh" }}>
+          
+          <img 
+            src="/rhino-logo.svg" 
+            alt="Rhino" 
+            style={{ 
+              height: "100px", 
+              marginBottom: "32px",
+              filter: "var(--logo-filter, invert(1))" // Will invert based on theme if set, otherwise default css can handle it. Let's use simple dark mode inverted logic
+            }} 
+            className="rhino-logo"
+          />
+
           <h1 className="hero-title" style={{ 
             fontSize: "clamp(36px, 5vw, 48px)", 
             margin: "0 auto 32px auto", 
@@ -110,6 +148,7 @@ function MoviesSearchContent() {
               value={query}
               onChange={(e) => setQuery(e.target.value)}
               placeholder="What do you want to watch?"
+              className={isLiquidGlass ? "liquid-input" : ""}
               style={{
                 width: "100%",
                 height: "56px",
@@ -117,24 +156,28 @@ function MoviesSearchContent() {
                 fontSize: "16px",
                 border: "1px solid transparent",
                 borderRadius: "28px",
-                background: "var(--surface)",
+                background: isLiquidGlass ? "rgba(255, 255, 255, 0.05)" : "var(--surface)",
                 color: "var(--foreground)",
                 outline: "none",
-                boxShadow: "0 1px 6px rgba(32,33,36,.28)",
+                boxShadow: isLiquidGlass ? "none" : "0 1px 6px rgba(32,33,36,.28)",
                 transition: "all 0.2s ease"
               }}
               onFocus={(e) => {
-                e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
-                e.currentTarget.style.background = "var(--surface)";
+                if (!isLiquidGlass) {
+                  e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+                  e.currentTarget.style.background = "var(--surface)";
+                }
               }}
-              onBlur={(e) => e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)"}
+              onBlur={(e) => {
+                if (!isLiquidGlass) e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28)";
+              }}
               onMouseOver={(e) => {
-                if (document.activeElement !== e.currentTarget) {
+                if (document.activeElement !== e.currentTarget && !isLiquidGlass) {
                   e.currentTarget.style.boxShadow = "0 1px 6px rgba(32,33,36,.28), 0 2px 8px rgba(32,33,36,.15)";
                 }
               }}
               onMouseOut={(e) => {
-                if (document.activeElement !== e.currentTarget) {
+                if (document.activeElement !== e.currentTarget && !isLiquidGlass) {
                   e.currentTarget.style.boxShadow = "none";
                 }
               }}
@@ -353,9 +396,58 @@ function MoviesSearchContent() {
         )}
       </div>
       
+      {/* OTA Update Popup */}
+      {updateAvailable && (
+        <div style={{
+          position: "fixed", top: 0, left: 0, right: 0, bottom: 0,
+          background: "rgba(0,0,0,0.4)", backdropFilter: "blur(4px)",
+          display: "flex", alignItems: "center", justifyContent: "center", zIndex: 9999
+        }}>
+          <div style={{
+            background: "var(--surface)", borderRadius: "14px", width: "270px",
+            textAlign: "center", overflow: "hidden", display: "flex", flexDirection: "column"
+          }}>
+            <div style={{ padding: "20px 16px 16px 16px" }}>
+              <div style={{ fontWeight: "600", fontSize: "17px", marginBottom: "4px" }}>Update Available</div>
+              <div style={{ fontSize: "13px", color: "#5f6368" }}>Rhino version {updateAvailable} is now available. Do you want to download the new IPA?</div>
+            </div>
+            <div style={{ display: "flex", borderTop: "1px solid var(--border)" }}>
+              <button 
+                onClick={() => setUpdateAvailable(null)}
+                style={{ flex: 1, padding: "12px", background: "none", border: "none", borderRight: "1px solid var(--border)", color: "var(--primary)", fontSize: "17px", cursor: "pointer" }}
+              >
+                Later
+              </button>
+              <button 
+                onClick={() => {
+                  if (updateUrl) window.location.href = updateUrl;
+                  setUpdateAvailable(null);
+                }}
+                style={{ flex: 1, padding: "12px", background: "none", border: "none", color: "var(--primary)", fontSize: "17px", fontWeight: "600", cursor: "pointer" }}
+              >
+                Update
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
+
       <style dangerouslySetInnerHTML={{__html: `
         @keyframes spin {
           100% { transform: rotate(360deg); }
+        }
+        
+        @media (prefers-color-scheme: light) {
+          .rhino-logo { filter: invert(0) !important; }
+        }
+        @media (prefers-color-scheme: dark) {
+          .rhino-logo { filter: invert(1) !important; }
+        }
+
+        .liquid-input {
+          backdrop-filter: blur(20px);
+          -webkit-backdrop-filter: blur(20px);
+          border: 1px solid rgba(255,255,255,0.1) !important;
         }
       `}} />
     </main>
