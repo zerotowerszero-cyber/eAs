@@ -1,0 +1,8 @@
+{
+  "rewrites": [
+    {
+      "source": "/bridge/:path*",
+      "destination": "https://helm-pi-one.vercel.app/bridge/:path*"
+    }
+  ]
+}

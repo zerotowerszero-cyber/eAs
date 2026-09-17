@@ -1,7 +1,14 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  async rewrites() {
+    return [
+      {
+        source: "/bridge/:path*",
+        destination: "https://helm-pi-one.vercel.app/bridge/:path*",
+      },
+    ];
+  },
 };
 
 export default nextConfig;
